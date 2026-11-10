@@ -1259,11 +1259,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     }
     function tweenTo(to, done) {
       cancelAnimationFrame(anim);
-      var from = p, t0 = performance.now(), dur = Math.max(260, Math.abs(to - from) * 420);
+      var from = p, t0 = performance.now(), dur = Math.max(260, Math.abs(to - from) * 420); animating = true;
       (function step(t) {
         var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
         var np = from + (to - from) * e; vel = (np - p) * 8; p = np; draw();
-        if (k < 1) anim = requestAnimationFrame(step); else { vel = 0; draw(); if (done) done(); }
+        if (k < 1) anim = requestAnimationFrame(step); else { animating = false; vel = 0; draw(); if (done) done(); }
       })(t0);
     }
     function finish(go) {
@@ -1271,13 +1271,22 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     }
     function begin(d) { dir = d; target = (rwi + d + RW.length) % RW.length; }
     var sx = 0, sy = 0, lx = 0, lt = 0, axis = null, active = false;
-    function down(x, y, t) { if (RW.length < 2) return; cancelAnimationFrame(anim); if (p) { p = 0; dir = 0; draw(); } sx = lx = x; sy = y; lt = t; axis = null; active = true; }
+    var hintTimer = null, animating = false;
+    function down(x, y, t) {
+      if (RW.length < 2) return;
+      clearTimeout(hintTimer); hintTimer = null; mem.set('sc-curtain-hint', true);   // палец важнее подсказки
+      cancelAnimationFrame(anim);
+      if (animating && p >= 1) rwi = target;          // прерванная смена образа засчитывается, а не откатывается
+      animating = false;
+      if (p) { p = 0; dir = 0; vel = 0; draw(); }
+      sx = lx = x; sy = y; lt = t; axis = null; active = true;
+    }
     function move(x, y, t, ev) {
       if (!active) return;
       var dx = x - sx, dy = y - sy;
       if (!axis) {
         if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-        axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        axis = Math.abs(dx) > Math.abs(dy) * 0.7 ? 'x' : 'y';     // свайп по диагонали тоже тянет шторку
         if (axis === 'y') { active = false; return; }
         begin(dx < 0 ? 1 : -1);
       }
@@ -1302,10 +1311,14 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       if (e.key === 'ArrowRight') { begin(1); finish(true); } if (e.key === 'ArrowLeft') { begin(-1); finish(true); }
     });
     // подсказка: при первом показе шторка чуть выглядывает из-за края
-    if (RW.length > 1 && !mem.get('sc-curtain-hint', false) && !reduce) setTimeout(function () {
-      if (p || !rwOpen) return; mem.set('sc-curtain-hint', true); begin(1);
-      tweenTo(0.22, function () { setTimeout(function () { tweenTo(0, function () { dir = 0; }); }, 350); });
-    }, 1600);
+    function hint() {                                // показываем, только когда примерочная на экране и её никто не трогает
+      if (RW.length < 2 || reduce || mem.get('sc-curtain-hint', false)) return;
+      hintTimer = setTimeout(function () {
+        if (active || p || !rwOpen || !visible) { hintTimer = null; return; }
+        mem.set('sc-curtain-hint', true); begin(1);
+        tweenTo(0.22, function () { hintTimer = setTimeout(function () { hintTimer = null; tweenTo(0, function () { dir = 0; }); }, 350); });
+      }, 1200);
+    }
 
     // стрелка: свернуть / развернуть (выбор запоминается)
     function rwApply(an) {
@@ -1317,7 +1330,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     }
     $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
-      es.forEach(function (en) { visible = en.isIntersecting; playActive(); });
+      es.forEach(function (en) { visible = en.isIntersecting; playActive(); if (visible && !hintTimer) hint(); });
     }, { threshold: 0.2 }).observe(stage);
     rwShown = -1; vids[0].classList.remove('on'); show(0); draw(); rwApply(false);
   }
