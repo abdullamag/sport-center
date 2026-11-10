@@ -2,6 +2,12 @@
 var CLOTHES = ['M', 'L', 'XL', 'XXL', '3XL'];
 var SHOES = ['39', '40', '41', '42', '43', '44'];
 
+// Примерочная: манекен на подиуме. Каждый образ — своё видео с тем же манекеном и той же сценой.
+// Новый образ = ещё один объект: video, poster, name и (по желанию) look — id готового образа ниже.
+window.RUNWAY = [
+  { id: 'black', name: 'Total black', video: 'video/mannequin-1.mp4', poster: 'video/mannequin-1.jpg', look: 'look-black' }
+];
+
 // Акции. store: 'ksp' | 'kz' | 'all'. Бесплатными становятся самые дешёвые вещи из подходящих.
 window.PROMOS = [
   {

@@ -264,6 +264,19 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 @media(max-width:719px){.sheet::before{content:"";display:block;width:40px;height:5px;margin:0 auto 2px;border-radius:3px;background:#D2D2D7}}
 @media(min-width:860px){.grab{display:none}}
 .demo{padding:6px 20px;text-align:center;font-size:12px;font-weight:500;color:var(--mute);background:#fff;border-bottom:1px solid var(--line)}
+/* примерочная: видео манекена */
+.runway{margin-top:28px}
+.rw-stage{position:relative;width:100%;max-width:calc(78dvh * 9 / 16);aspect-ratio:9/16;margin:0 auto;border-radius:var(--r);overflow:hidden;background:#E7E6E4;animation:appear .8s .1s var(--ease) both}
+.rw-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
+.rw-v.on{opacity:1}
+.rw-bar{max-width:calc(78dvh * 9 / 16);margin:14px auto 0;display:flex;align-items:center;gap:12px}
+.rw-bar .t{flex:1;min-width:0}.rw-bar small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.rw-bar b{display:block;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.rw-bar .btn{width:auto;height:44px;padding:0 18px;font-size:14px}
+.rw-looks{max-width:calc(78dvh * 9 / 16);margin:12px auto 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.rw-looks button{flex:none;width:56px;height:76px;border-radius:12px;overflow:hidden;border:2px solid transparent;padding:0;background:var(--soft);transition:border-color .3s,transform .25s var(--ease)}
+.rw-looks button[aria-pressed=true]{border-color:var(--ink)}
+.rw-looks img{width:100%;height:100%;object-fit:cover;display:block}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--mute);line-height:1.7}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style>
@@ -296,6 +309,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     <h1>Осень.<br>Зима.</h1>
     <p>Новая коллекция уже в магазинах.</p>
   </section>
+  <section class="runway" id="runway" aria-label="Примерочная"></section>
   <div class="promos" id="promos"></div>
   <div class="tabs" id="tabs" role="group" aria-label="Категории"></div>
   <div class="feed" id="feed"></div>
@@ -1177,6 +1191,47 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     if (was && !opening) keepFeedY();
   }
   window.addEventListener('hashchange', route);
+
+  /* ---------- примерочная ---------- */
+  var RW = window.RUNWAY || [];
+  if (RW.length) {
+    var rwi = 0;
+    $('#runway').innerHTML =
+      '<div class="rw-stage"><video class="rw-v on" muted playsinline autoplay loop preload="auto" aria-hidden="true"></video><video class="rw-v" muted playsinline loop preload="none" aria-hidden="true"></video></div>' +
+      '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Смотреть образ</a></div>' +
+      (RW.length > 1 ? '<div class="rw-looks" role="group" aria-label="Образы на манекене">' + RW.map(function (o, i) {
+        return '<button class="press" data-rw="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + o.name + '"><img src="' + o.poster + '" alt=""></button>';
+      }).join('') + '</div>' : '');
+    var vids = document.querySelectorAll('.rw-v'), rwCur = 0;
+    function rwMeta(o) {
+      $('#rwName').textContent = o.name;
+      var b = $('#rwBuy'); b.hidden = !o.look; if (o.look) b.href = '#l-' + o.look;
+    }
+    vids[0].poster = RW[0].poster; vids[0].src = RW[0].video; rwMeta(RW[0]);
+    // плавная смена образа: следующее видео грузится во втором слое и проявляется поверх
+    function setOutfit(i) {
+      if (i === rwi) return;
+      var from = vids[rwCur], to = vids[1 - rwCur], o = RW[i];
+      to.poster = o.poster; to.src = o.video;
+      to.addEventListener('loadeddata', function once() {
+        to.removeEventListener('loadeddata', once);
+        try { if (to.duration && from.duration) to.currentTime = from.currentTime % to.duration; } catch (e) {}
+        to.play().catch(function () {});
+        to.classList.add('on'); from.classList.remove('on');
+        setTimeout(function () { from.pause(); }, 750);
+        rwCur = 1 - rwCur;
+      });
+      rwi = i; rwMeta(o);
+      document.querySelectorAll('[data-rw]').forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.rw === i); });
+    }
+    $('#runway').addEventListener('click', function (e) { var b = e.target.closest('[data-rw]'); if (b) setOutfit(+b.dataset.rw); });
+    // вне экрана видео стоит на паузе — бережём батарею
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) vids[0].removeAttribute('autoplay');
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
+      es.forEach(function (en) { var v = vids[rwCur]; if (en.isIntersecting && !reduce) v.play().catch(function () {}); else v.pause(); });
+    }, { threshold: 0.2 }).observe($('.rw-stage'));
+  }
 
   /* ---------- promos ---------- */
   $('#promos').innerHTML = PR.map(function (x) {
