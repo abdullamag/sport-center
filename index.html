@@ -276,9 +276,10 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .runway{margin-top:28px}
 .rw-stage{position:relative;width:100%;max-width:min(440px,calc(66dvh * 2 / 3));aspect-ratio:2/3;margin:0 auto;background:#fff;animation:appear .8s .1s var(--ease) both}
 .rw-stage{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;overflow:hidden}
-.rw-track{display:flex;height:100%;will-change:transform}
-.rw-slide{flex:0 0 100%;height:100%;position:relative}
-.rw-v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.rw-v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;visibility:hidden}
+.rw-v.on{visibility:visible}
+.rw-rod{position:absolute;left:4%;right:4%;top:3%;height:3px;border-radius:2px;background:linear-gradient(#D9D9DC,#9A9AA0);box-shadow:0 1px 1px rgba(0,0,0,.15);z-index:3}
+.rw-curtain{position:absolute;left:-2%;top:3.2%;width:104%;height:96.8%;z-index:2;pointer-events:none;-webkit-user-drag:none;will-change:transform;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25));transform:translate3d(200%,0,0)}
 .rw-bar b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:520px){.rw-in{margin:0 -20px}}
 .rw-dots{display:flex;justify-content:center;gap:6px;margin-top:6px}
@@ -286,8 +287,8 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .rw-dots i.on{width:18px;background:var(--ink)}
 .rw-bar{max-width:min(440px,calc(66dvh * 2 / 3));margin:14px auto 0;display:flex;align-items:center;gap:12px}
 .rw-bar .t{flex:1;min-width:0}.rw-bar small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.rw-bar b{display:block;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
-.rw-bar .btn{width:auto;height:44px;padding:0 18px;font-size:14px}
+.rw-bar b{display:block;font-size:17px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.rw-bar .btn{width:auto;height:44px;padding:0 14px;font-size:14px}
 .rw-fold{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s var(--ease),opacity .4s ease}
 .rw-in{min-height:0;overflow:hidden}
 .runway.closed .rw-fold{grid-template-rows:0fr;opacity:0}
@@ -1212,82 +1213,113 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   }
   window.addEventListener('hashchange', route);
 
-  /* ---------- примерочная: манекены листаются свайпом ---------- */
+  /* ---------- примерочная: шторка, за которой меняется манекен ---------- */
   var RW = window.RUNWAY || [];
   if (RW.length) {
-    var rwi = 0, rwOpen = mem.get('sc-rw-open', true);
+    var rwi = 0, rwOpen = mem.get('sc-rw-open', true), visible = true;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     $('#runway').innerHTML =
-      '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage" tabindex="0" aria-roledescription="карусель" aria-label="Манекены"><div class="rw-track">' +
+      '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage" tabindex="0" aria-label="Манекены: потяните шторку, чтобы сменить образ">' +
       RW.map(function (o, i) {
-        return '<div class="rw-slide"><video class="rw-v" muted playsinline loop preload="' + (i ? 'metadata' : 'auto') + '" poster="' + o.poster + '" src="' + o.video + '" aria-hidden="true"></video></div>';
-      }).join('') + '</div></div>' +
+        return '<video class="rw-v' + (i ? '' : ' on') + '" muted playsinline loop preload="' + (i ? 'metadata' : 'auto') + '" poster="' + o.poster + '" src="' + o.video + '" aria-hidden="true"></video>';
+      }).join('') +
+      (RW.length > 1 ? '<span class="rw-rod" aria-hidden="true"></span><img class="rw-curtain" src="img/curtain.png" alt="" aria-hidden="true" draggable="false">' : '') +
+      '</div>' +
       (RW.length > 1 ? '<div class="rw-dots" aria-hidden="true">' + RW.map(function () { return '<i></i>'; }).join('') + '</div>' : '') +
       '</div></div>' +
       '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Посмотреть образ</a>' +
       '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>';
-    var stage = $('.rw-stage'), track = $('.rw-track'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
-    var visible = true;
+    var stage = $('.rw-stage'), cur = $('.rw-curtain'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
+    var rwShown = 0;                                   // какой манекен сейчас виден за шторкой
     function playActive() {
       vids.forEach(function (v, i) {
-        if (i === rwi && rwOpen && visible && !reduce) { v.preload = 'auto'; v.play().catch(function () {}); } else v.pause();
+        if (i === rwShown && rwOpen && visible && !reduce) { v.preload = 'auto'; v.play().catch(function () {}); } else v.pause();
       });
     }
-    function rwMeta() {
-      var o = RW[rwi], n = $('#rwName');
+    function show(i) {
+      if (i === rwShown) return;
+      if (vids[rwShown]) vids[rwShown].classList.remove('on'); vids[i].classList.add('on'); rwShown = i;
+      try { vids[i].currentTime = 0; } catch (e) {}
+      var o = RW[i], n = $('#rwName');
       n.classList.remove('swap'); void n.offsetWidth; n.classList.add('swap'); n.textContent = o.name;
       var b = $('#rwBuy'); b.hidden = !o.look; if (o.look) b.href = '#l-' + o.look;
-      dots.forEach(function (d, i) { d.classList.toggle('on', i === rwi); });
+      dots.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+      playActive(); buzz(10);
     }
-    function rwGo(i, anim) {
-      i = Math.max(0, Math.min(RW.length - 1, i));
-      var changed = i !== rwi; rwi = i;
-      track.style.transition = anim === false ? 'none' : 'transform .55s cubic-bezier(.22,.9,.24,1)';
-      track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
-      if (changed) { rwMeta(); playActive(); buzz(8); }
+    // p от 0 до 2: 0 — шторка за краем, 1 — закрыла манекена, 2 — ушла за другой край
+    var dir = 0, p = 0, target = 0, vel = 0, anim = null;
+    function draw() {
+      if (!cur) return;
+      var w = stage.clientWidth * 1.04 + 30, x = dir >= 0 ? w * (1 - p) : -w * (1 - p);   // +30: тень шторки не выглядывает из-за края
+      var sk = Math.max(-8, Math.min(8, vel * 6 * (dir >= 0 ? 1 : -1)));
+      var gather = 1 - Math.min(0.08, Math.abs(vel) * 0.05);
+      cur.style.transform = 'translate3d(' + x + 'px,0,0) skewX(' + sk + 'deg) scaleX(' + gather + ')';
+      cur.style.transformOrigin = (dir >= 0 ? '0' : '100%') + ' 0';
+      show(p >= 1 ? target : rwi);
     }
-    // свайп с «резиной» на краях
-    var sx = 0, sy = 0, dx = 0, drag = null, w = 1;
-    stage.addEventListener('pointerdown', function (e) {
-      if (RW.length < 2 || (e.pointerType === 'mouse' && e.button !== 0)) return;
-      sx = e.clientX; sy = e.clientY; dx = 0; w = stage.clientWidth || 1; drag = { id: e.pointerId, axis: null, t: e.timeStamp };
-    });
-    stage.addEventListener('pointermove', function (e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      var mx = e.clientX - sx, my = e.clientY - sy;
-      if (!drag.axis) {
-        if (Math.abs(mx) < 6 && Math.abs(my) < 6) return;
-        drag.axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
-        if (drag.axis === 'y') { drag = null; return; }
-        stage.setPointerCapture(drag.id); track.style.transition = 'none';
+    function tweenTo(to, done) {
+      cancelAnimationFrame(anim);
+      var from = p, t0 = performance.now(), dur = Math.max(260, Math.abs(to - from) * 420);
+      (function step(t) {
+        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        var np = from + (to - from) * e; vel = (np - p) * 8; p = np; draw();
+        if (k < 1) anim = requestAnimationFrame(step); else { vel = 0; draw(); if (done) done(); }
+      })(t0);
+    }
+    function finish(go) {
+      tweenTo(go ? 2 : 0, function () { if (go) rwi = target; p = 0; dir = 0; draw(); });
+    }
+    function begin(d) { dir = d; target = (rwi + d + RW.length) % RW.length; }
+    var sx = 0, sy = 0, lx = 0, lt = 0, axis = null, active = false;
+    function down(x, y, t) { if (RW.length < 2) return; cancelAnimationFrame(anim); if (p) { p = 0; dir = 0; draw(); } sx = lx = x; sy = y; lt = t; axis = null; active = true; }
+    function move(x, y, t, ev) {
+      if (!active) return;
+      var dx = x - sx, dy = y - sy;
+      if (!axis) {
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (axis === 'y') { active = false; return; }
+        begin(dx < 0 ? 1 : -1);
       }
-      dx = mx;
-      var edge = (rwi === 0 && dx > 0) || (rwi === RW.length - 1 && dx < 0);
-      var off = edge ? dx / 3 : dx;
-      track.style.transform = 'translate3d(calc(' + (-rwi * 100) + '% + ' + off + 'px),0,0)';
-    });
-    function end(e) {
-      if (!drag || e.pointerId !== drag.id || drag.axis !== 'x') { drag = null; return; }
-      var v = dx / Math.max(1, e.timeStamp - drag.t); drag = null;
-      if (dx < -w * 0.2 || v < -0.4) rwGo(rwi + 1); else if (dx > w * 0.2 || v > 0.4) rwGo(rwi - 1); else rwGo(rwi);
+      if (ev && ev.cancelable) ev.preventDefault();
+      var w = stage.clientWidth || 1;
+      var np = Math.max(0, Math.min(2, (dir > 0 ? -dx : dx) / w * 2));
+      vel = (np - p) / Math.max(1, t - lt) * 16; p = np; lx = x; lt = t; draw();
     }
-    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
-    stage.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') rwGo(rwi + 1); if (e.key === 'ArrowLeft') rwGo(rwi - 1); });
+    function up() {
+      if (!active) return; active = false;
+      if (axis !== 'x') return;
+      finish(p >= 0.5 || vel > 0.12);
+    }
+    stage.addEventListener('touchstart', function (e) { if (e.touches.length === 1) down(e.touches[0].clientX, e.touches[0].clientY, e.timeStamp); }, { passive: true });
+    stage.addEventListener('touchmove', function (e) { move(e.touches[0].clientX, e.touches[0].clientY, e.timeStamp, e); }, { passive: false });
+    stage.addEventListener('touchend', up); stage.addEventListener('touchcancel', up);
+    stage.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' || e.button) return; stage.setPointerCapture(e.pointerId); down(e.clientX, e.clientY, e.timeStamp); });
+    stage.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse') move(e.clientX, e.clientY, e.timeStamp, e); });
+    stage.addEventListener('pointerup', function (e) { if (e.pointerType === 'mouse') up(); });
+    stage.addEventListener('keydown', function (e) {
+      if (RW.length < 2 || p) return;
+      if (e.key === 'ArrowRight') { begin(1); finish(true); } if (e.key === 'ArrowLeft') { begin(-1); finish(true); }
+    });
+    // подсказка: при первом показе шторка чуть выглядывает из-за края
+    if (RW.length > 1 && !mem.get('sc-curtain-hint', false) && !reduce) setTimeout(function () {
+      if (p || !rwOpen) return; mem.set('sc-curtain-hint', true); begin(1);
+      tweenTo(0.22, function () { setTimeout(function () { tweenTo(0, function () { dir = 0; }); }, 350); });
+    }, 1600);
 
     // стрелка: свернуть / развернуть (выбор запоминается)
-    function rwApply(anim) {
+    function rwApply(an) {
       var r = $('#runway'), t = $('#rwTog');
-      r.classList.toggle('closed', !rwOpen); if (!anim) r.classList.add('noanim');
+      r.classList.toggle('closed', !rwOpen); if (!an) r.classList.add('noanim');
       t.setAttribute('aria-expanded', rwOpen); t.setAttribute('aria-label', rwOpen ? 'Скрыть примерочную' : 'Показать примерочную');
       playActive();
-      if (!anim) requestAnimationFrame(function () { r.classList.remove('noanim'); });
+      if (!an) requestAnimationFrame(function () { r.classList.remove('noanim'); });
     }
     $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
-    // вне экрана видео на паузе — бережём батарею
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
       es.forEach(function (en) { visible = en.isIntersecting; playActive(); });
     }, { threshold: 0.2 }).observe(stage);
-    rwMeta(); rwGo(0, false); rwApply(false);
+    rwShown = -1; vids[0].classList.remove('on'); show(0); draw(); rwApply(false);
   }
 
   /* ---------- promos ---------- */
