@@ -1215,7 +1215,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 
   /* ---------- примерочная: шторка, за которой меняется манекен ---------- */
   var RW = window.RUNWAY || [];
-  if (RW.length) {
+  if (RW.length) (function () {
     var rwi = 0, rwOpen = mem.get('sc-rw-open', true), visible = true;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     $('#runway').innerHTML =
@@ -1229,7 +1229,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       '</div></div>' +
       '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Посмотреть образ</a>' +
       '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>';
-    var stage = $('.rw-stage'), cur = $('.rw-curtain'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
+    var stage = $('.rw-stage'), rwCurtain = $('.rw-curtain'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
     var rwShown = 0;                                   // какой манекен сейчас виден за шторкой
     function playActive() {
       vids.forEach(function (v, i) {
@@ -1249,12 +1249,12 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     // p от 0 до 2: 0 — шторка за краем, 1 — закрыла манекена, 2 — ушла за другой край
     var dir = 0, p = 0, target = 0, vel = 0, anim = null;
     function draw() {
-      if (!cur) return;
+      if (!rwCurtain) return;
       var w = stage.clientWidth * 1.04 + 30, x = dir >= 0 ? w * (1 - p) : -w * (1 - p);   // +30: тень шторки не выглядывает из-за края
       var sk = Math.max(-8, Math.min(8, vel * 6 * (dir >= 0 ? 1 : -1)));
       var gather = 1 - Math.min(0.08, Math.abs(vel) * 0.05);
-      cur.style.transform = 'translate3d(' + x + 'px,0,0) skewX(' + sk + 'deg) scaleX(' + gather + ')';
-      cur.style.transformOrigin = (dir >= 0 ? '0' : '100%') + ' 0';
+      rwCurtain.style.transform = 'translate3d(' + x + 'px,0,0) skewX(' + sk + 'deg) scaleX(' + gather + ')';
+      rwCurtain.style.transformOrigin = (dir >= 0 ? '0' : '100%') + ' 0';
       show(p >= 1 ? target : rwi);
     }
     function tweenTo(to, done) {
@@ -1333,7 +1333,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       es.forEach(function (en) { visible = en.isIntersecting; playActive(); if (visible && !hintTimer) hint(); });
     }, { threshold: 0.2 }).observe(stage);
     rwShown = -1; vids[0].classList.remove('on'); show(0); draw(); rwApply(false);
-  }
+  })();
 
   /* ---------- promos ---------- */
   $('#promos').innerHTML = PR.map(function (x) {
