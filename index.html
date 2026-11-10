@@ -1206,7 +1206,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     var rwi = 0;
     $('#runway').innerHTML =
       '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage"><video class="rw-v on" muted playsinline autoplay loop preload="auto" aria-hidden="true"></video><video class="rw-v" muted playsinline loop preload="none" aria-hidden="true"></video></div></div></div>' +
-      '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Примерить образ</a>' +
+      '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Посмотреть образ</a>' +
       '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>' +
       (RW.length > 1 ? '<div class="rw-looks" role="group" aria-label="Образы на манекене">' + RW.map(function (o, i) {
         return '<button class="press" data-rw="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + o.name + '"><img src="' + o.poster + '" alt=""></button>';
