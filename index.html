@@ -277,6 +277,14 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .rw-looks button{flex:none;width:56px;height:76px;border-radius:12px;overflow:hidden;border:2px solid transparent;padding:0;background:var(--soft);transition:border-color .3s,transform .25s var(--ease)}
 .rw-looks button[aria-pressed=true]{border-color:var(--ink)}
 .rw-looks img{width:100%;height:100%;object-fit:cover;display:block}
+.rw-fold{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s var(--ease),opacity .4s ease}
+.rw-in{min-height:0;overflow:hidden}
+.runway.closed .rw-fold{grid-template-rows:0fr;opacity:0}
+.runway.noanim .rw-fold,.runway.noanim .rw-tog svg{transition:none}
+.rw-tog{width:44px;height:44px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:none}
+.rw-tog svg{transition:transform .45s var(--ease)}
+.runway.closed .rw-tog svg{transform:rotate(180deg)}
+.runway.closed .rw-bar{margin-top:0}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--mute);line-height:1.7}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style>
@@ -1197,8 +1205,9 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   if (RW.length) {
     var rwi = 0;
     $('#runway').innerHTML =
-      '<div class="rw-stage"><video class="rw-v on" muted playsinline autoplay loop preload="auto" aria-hidden="true"></video><video class="rw-v" muted playsinline loop preload="none" aria-hidden="true"></video></div>' +
-      '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Смотреть образ</a></div>' +
+      '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage"><video class="rw-v on" muted playsinline autoplay loop preload="auto" aria-hidden="true"></video><video class="rw-v" muted playsinline loop preload="none" aria-hidden="true"></video></div></div></div>' +
+      '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Примерить образ</a>' +
+      '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>' +
       (RW.length > 1 ? '<div class="rw-looks" role="group" aria-label="Образы на манекене">' + RW.map(function (o, i) {
         return '<button class="press" data-rw="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + o.name + '"><img src="' + o.poster + '" alt=""></button>';
       }).join('') + '</div>' : '');
@@ -1225,12 +1234,24 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       document.querySelectorAll('[data-rw]').forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.rw === i); });
     }
     $('#runway').addEventListener('click', function (e) { var b = e.target.closest('[data-rw]'); if (b) setOutfit(+b.dataset.rw); });
+    // стрелка: свернуть / развернуть манекен (запоминаем выбор)
+    var rwOpen = mem.get('sc-rw-open', true);
+    function rwApply(anim) {
+      var r = $('#runway'), t = $('#rwTog');
+      r.classList.toggle('closed', !rwOpen); if (!anim) r.classList.add('noanim');
+      t.setAttribute('aria-expanded', rwOpen); t.setAttribute('aria-label', rwOpen ? 'Скрыть примерочную' : 'Показать примерочную');
+      var v = vids[rwCur]; if (rwOpen && !reduce) v.play().catch(function () {}); else v.pause();
+      if (!anim) requestAnimationFrame(function () { r.classList.remove('noanim'); });
+    }
+    $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
+
     // вне экрана видео стоит на паузе — бережём батарею
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) vids[0].removeAttribute('autoplay');
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
-      es.forEach(function (en) { var v = vids[rwCur]; if (en.isIntersecting && !reduce) v.play().catch(function () {}); else v.pause(); });
+      es.forEach(function (en) { var v = vids[rwCur]; if (en.isIntersecting && rwOpen && !reduce) v.play().catch(function () {}); else v.pause(); });
     }, { threshold: 0.2 }).observe($('.rw-stage'));
+    rwApply(false);
   }
 
   /* ---------- promos ---------- */
