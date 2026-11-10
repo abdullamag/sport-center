@@ -275,16 +275,19 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 /* примерочная: видео манекена */
 .runway{margin-top:28px}
 .rw-stage{position:relative;width:100%;max-width:min(440px,calc(66dvh * 2 / 3));aspect-ratio:2/3;margin:0 auto;background:#fff;animation:appear .8s .1s var(--ease) both}
-.rw-v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .7s ease;pointer-events:none}
-.rw-v.on{opacity:1}
+.rw-stage{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;overflow:hidden}
+.rw-track{display:flex;height:100%;will-change:transform}
+.rw-slide{flex:0 0 100%;height:100%;position:relative}
+.rw-v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.rw-bar b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:520px){.rw-in{margin:0 -20px}}
+.rw-dots{display:flex;justify-content:center;gap:6px;margin-top:6px}
+.rw-dots i{width:6px;height:6px;border-radius:3px;background:#D2D2D7;transition:width .4s var(--ease),background .4s}
+.rw-dots i.on{width:18px;background:var(--ink)}
 .rw-bar{max-width:min(440px,calc(66dvh * 2 / 3));margin:14px auto 0;display:flex;align-items:center;gap:12px}
 .rw-bar .t{flex:1;min-width:0}.rw-bar small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .rw-bar b{display:block;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
 .rw-bar .btn{width:auto;height:44px;padding:0 18px;font-size:14px}
-.rw-looks{max-width:min(440px,calc(66dvh * 2 / 3));margin:12px auto 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
-.rw-looks button{flex:none;width:56px;height:76px;border-radius:12px;overflow:hidden;border:2px solid transparent;padding:0;background:var(--soft);transition:border-color .3s,transform .25s var(--ease)}
-.rw-looks button[aria-pressed=true]{border-color:var(--ink)}
-.rw-looks img{width:100%;height:100%;object-fit:cover;display:block}
 .rw-fold{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s var(--ease),opacity .4s ease}
 .rw-in{min-height:0;overflow:hidden}
 .runway.closed .rw-fold{grid-template-rows:0fr;opacity:0}
@@ -1209,58 +1212,82 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   }
   window.addEventListener('hashchange', route);
 
-  /* ---------- примерочная ---------- */
+  /* ---------- примерочная: манекены листаются свайпом ---------- */
   var RW = window.RUNWAY || [];
   if (RW.length) {
-    var rwi = 0;
+    var rwi = 0, rwOpen = mem.get('sc-rw-open', true);
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     $('#runway').innerHTML =
-      '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage"><video class="rw-v on" muted playsinline autoplay loop preload="auto" aria-hidden="true"></video><video class="rw-v" muted playsinline loop preload="none" aria-hidden="true"></video></div></div></div>' +
+      '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage" tabindex="0" aria-roledescription="карусель" aria-label="Манекены"><div class="rw-track">' +
+      RW.map(function (o, i) {
+        return '<div class="rw-slide"><video class="rw-v" muted playsinline loop preload="' + (i ? 'metadata' : 'auto') + '" poster="' + o.poster + '" src="' + o.video + '" aria-hidden="true"></video></div>';
+      }).join('') + '</div></div>' +
+      (RW.length > 1 ? '<div class="rw-dots" aria-hidden="true">' + RW.map(function () { return '<i></i>'; }).join('') + '</div>' : '') +
+      '</div></div>' +
       '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Посмотреть образ</a>' +
-      '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>' +
-      (RW.length > 1 ? '<div class="rw-looks" role="group" aria-label="Образы на манекене">' + RW.map(function (o, i) {
-        return '<button class="press" data-rw="' + i + '" aria-pressed="' + (i === 0) + '" aria-label="' + o.name + '"><img src="' + o.poster + '" alt=""></button>';
-      }).join('') + '</div>' : '');
-    var vids = document.querySelectorAll('.rw-v'), rwCur = 0;
-    function rwMeta(o) {
-      $('#rwName').textContent = o.name;
-      var b = $('#rwBuy'); b.hidden = !o.look; if (o.look) b.href = '#l-' + o.look;
-    }
-    vids[0].poster = RW[0].poster; vids[0].src = RW[0].video; rwMeta(RW[0]);
-    // плавная смена образа: следующее видео грузится во втором слое и проявляется поверх
-    function setOutfit(i) {
-      if (i === rwi) return;
-      var from = vids[rwCur], to = vids[1 - rwCur], o = RW[i];
-      to.poster = o.poster; to.src = o.video;
-      to.addEventListener('loadeddata', function once() {
-        to.removeEventListener('loadeddata', once);
-        try { if (to.duration && from.duration) to.currentTime = from.currentTime % to.duration; } catch (e) {}
-        to.play().catch(function () {});
-        to.classList.add('on'); from.classList.remove('on');
-        setTimeout(function () { from.pause(); }, 750);
-        rwCur = 1 - rwCur;
+      '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>';
+    var stage = $('.rw-stage'), track = $('.rw-track'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
+    var visible = true;
+    function playActive() {
+      vids.forEach(function (v, i) {
+        if (i === rwi && rwOpen && visible && !reduce) { v.preload = 'auto'; v.play().catch(function () {}); } else v.pause();
       });
-      rwi = i; rwMeta(o);
-      document.querySelectorAll('[data-rw]').forEach(function (b) { b.setAttribute('aria-pressed', +b.dataset.rw === i); });
     }
-    $('#runway').addEventListener('click', function (e) { var b = e.target.closest('[data-rw]'); if (b) setOutfit(+b.dataset.rw); });
-    // стрелка: свернуть / развернуть манекен (запоминаем выбор)
-    var rwOpen = mem.get('sc-rw-open', true);
+    function rwMeta() {
+      var o = RW[rwi], n = $('#rwName');
+      n.classList.remove('swap'); void n.offsetWidth; n.classList.add('swap'); n.textContent = o.name;
+      var b = $('#rwBuy'); b.hidden = !o.look; if (o.look) b.href = '#l-' + o.look;
+      dots.forEach(function (d, i) { d.classList.toggle('on', i === rwi); });
+    }
+    function rwGo(i, anim) {
+      i = Math.max(0, Math.min(RW.length - 1, i));
+      var changed = i !== rwi; rwi = i;
+      track.style.transition = anim === false ? 'none' : 'transform .55s cubic-bezier(.22,.9,.24,1)';
+      track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
+      if (changed) { rwMeta(); playActive(); buzz(8); }
+    }
+    // свайп с «резиной» на краях
+    var sx = 0, sy = 0, dx = 0, drag = null, w = 1;
+    stage.addEventListener('pointerdown', function (e) {
+      if (RW.length < 2 || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      sx = e.clientX; sy = e.clientY; dx = 0; w = stage.clientWidth || 1; drag = { id: e.pointerId, axis: null, t: e.timeStamp };
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var mx = e.clientX - sx, my = e.clientY - sy;
+      if (!drag.axis) {
+        if (Math.abs(mx) < 6 && Math.abs(my) < 6) return;
+        drag.axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+        if (drag.axis === 'y') { drag = null; return; }
+        stage.setPointerCapture(drag.id); track.style.transition = 'none';
+      }
+      dx = mx;
+      var edge = (rwi === 0 && dx > 0) || (rwi === RW.length - 1 && dx < 0);
+      var off = edge ? dx / 3 : dx;
+      track.style.transform = 'translate3d(calc(' + (-rwi * 100) + '% + ' + off + 'px),0,0)';
+    });
+    function end(e) {
+      if (!drag || e.pointerId !== drag.id || drag.axis !== 'x') { drag = null; return; }
+      var v = dx / Math.max(1, e.timeStamp - drag.t); drag = null;
+      if (dx < -w * 0.2 || v < -0.4) rwGo(rwi + 1); else if (dx > w * 0.2 || v > 0.4) rwGo(rwi - 1); else rwGo(rwi);
+    }
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+    stage.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') rwGo(rwi + 1); if (e.key === 'ArrowLeft') rwGo(rwi - 1); });
+
+    // стрелка: свернуть / развернуть (выбор запоминается)
     function rwApply(anim) {
       var r = $('#runway'), t = $('#rwTog');
       r.classList.toggle('closed', !rwOpen); if (!anim) r.classList.add('noanim');
       t.setAttribute('aria-expanded', rwOpen); t.setAttribute('aria-label', rwOpen ? 'Скрыть примерочную' : 'Показать примерочную');
-      var v = vids[rwCur]; if (rwOpen && !reduce) v.play().catch(function () {}); else v.pause();
+      playActive();
       if (!anim) requestAnimationFrame(function () { r.classList.remove('noanim'); });
     }
     $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
-
-    // вне экрана видео стоит на паузе — бережём батарею
-    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) vids[0].removeAttribute('autoplay');
+    // вне экрана видео на паузе — бережём батарею
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
-      es.forEach(function (en) { var v = vids[rwCur]; if (en.isIntersecting && rwOpen && !reduce) v.play().catch(function () {}); else v.pause(); });
-    }, { threshold: 0.2 }).observe($('.rw-stage'));
-    rwApply(false);
+      es.forEach(function (en) { visible = en.isIntersecting; playActive(); });
+    }, { threshold: 0.2 }).observe(stage);
+    rwMeta(); rwGo(0, false); rwApply(false);
   }
 
   /* ---------- promos ---------- */
