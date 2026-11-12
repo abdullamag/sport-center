@@ -297,6 +297,29 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .rw-tog svg{transition:transform .45s var(--ease)}
 .runway.closed .rw-tog svg{transform:rotate(180deg)}
 .runway.closed .rw-bar{margin-top:0}
+/* примерочная на большом экране: слева папка с образами, справа крупный манекен */
+.rw-side{display:none}
+@media(min-width:860px){
+  .runway{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(560px,calc(80dvh * 2 / 3)));grid-template-areas:"side stage" "side bar";column-gap:48px;align-items:start;margin-top:40px}
+  .rw-side{display:block;grid-area:side;align-self:center}
+  .rw-fold{grid-area:stage}.rw-bar{grid-area:bar}
+  .rw-stage,.rw-bar{max-width:none}
+  .rw-bar{margin:14px 0 0}
+  .runway.closed .rw-bar{margin-top:0}
+  .rw-bar b{font-size:20px}
+  .rw-side-h{margin:0 0 16px;font-size:28px;font-weight:700;letter-spacing:-.02em}
+  .rw-list{display:grid;gap:12px}
+  .rw-card{display:flex;align-items:center;gap:16px;width:100%;padding:12px;border-radius:var(--r);background:var(--soft);text-align:left;border:2px solid transparent;transition:border-color .3s,background-color .3s,transform .25s var(--ease)}
+  .rw-card:hover{background:#EEEEF1}
+  .rw-card.on{border-color:var(--ink);background:#fff}
+  .rw-card-ph{width:88px;height:110px;border-radius:12px;overflow:hidden;flex:none;background:#fff}
+  .rw-card-ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .rw-card .t{flex:1;min-width:0}.rw-card b{display:block;font-size:17px;font-weight:600}
+  .rw-card small{display:block;font-size:14px;color:var(--mute);margin-top:4px}
+  .rw-card em{display:inline-block;margin-top:10px;height:24px;padding:0 10px;border-radius:12px;background:var(--ink);color:#fff;font-size:12px;font-style:normal;font-weight:600;line-height:24px;opacity:0;transition:opacity .3s}
+  .rw-card.on em{opacity:1}
+  .rw-card svg{color:var(--mute);flex:none}
+}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--mute);line-height:1.7}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style>
@@ -1218,7 +1241,18 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   if (RW.length) (function () {
     var rwi = 0, rwOpen = mem.get('sc-rw-open', true), visible = true;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var rwLooks = (window.LOOKS || []).map(function (l) {
+      var k = -1; RW.forEach(function (o, j) { if (o.look === l.id) k = j; }); return { l: l, k: k };
+    });
     $('#runway').innerHTML =
+      '<aside class="rw-side" aria-label="Готовые образы"><p class="rw-side-h">Готовые образы</p><div class="rw-list">' +
+      rwLooks.map(function (x) {
+        return '<button class="rw-card press" data-rwlook="' + x.l.id + '"' + (x.k >= 0 ? ' data-rwk="' + x.k + '"' : '') + '>' +
+          '<span class="rw-card-ph"><img src="' + x.l.photos[0] + '" alt=""></span>' +
+          '<span class="t"><b>' + x.l.name + '</b><small>' + x.l.items.length + ' вещи · ' + rub(lookTotal(x.l)) + '</small>' +
+          (x.k >= 0 ? '<em>На манекене</em>' : '') + '</span>' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
+      }).join('') + '</div></aside>' +
       '<div class="rw-fold" id="rwFold"><div class="rw-in"><div class="rw-stage" tabindex="0" aria-label="Манекены: потяните шторку, чтобы сменить образ">' +
       RW.map(function (o, i) {
         return '<video class="rw-v' + (i ? '' : ' on') + '" muted playsinline loop preload="' + (i ? 'metadata' : 'auto') + '" poster="' + o.poster + '" src="' + o.video + '" aria-hidden="true"></video>';
@@ -1244,6 +1278,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       n.classList.remove('swap'); void n.offsetWidth; n.classList.add('swap'); n.textContent = o.name;
       var b = $('#rwBuy'); b.hidden = !o.look; if (o.look) b.href = '#l-' + o.look;
       dots.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+      document.querySelectorAll('.rw-card').forEach(function (c) { c.classList.toggle('on', c.dataset.rwk === String(i)); });
       playActive(); buzz(10);
     }
     // p от 0 до 2: 0 — шторка за краем, 1 — закрыла манекена, 2 — ушла за другой край
@@ -1328,6 +1363,15 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       playActive();
       if (!an) requestAnimationFrame(function () { r.classList.remove('noanim'); });
     }
+    // клик по образу в папке: если у образа есть манекен — шторка переодевает его, иначе (или повторный клик) открываем образ
+    $('#runway').addEventListener('click', function (e) {
+      var c = e.target.closest('.rw-card'); if (!c) return;
+      var k = c.dataset.rwk == null ? -1 : +c.dataset.rwk;
+      if (k < 0 || k === rwShown || !rwCurtain || animating) { location.hash = 'l-' + c.dataset.rwlook; return; }
+      if (!rwOpen) { rwOpen = true; mem.set('sc-rw-open', true); rwApply(true); }
+      clearTimeout(hintTimer); mem.set('sc-curtain-hint', true);
+      dir = k > rwi ? 1 : -1; target = k; finish(true);
+    });
     $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
       es.forEach(function (en) { visible = en.isIntersecting; playActive(); if (visible && !hintTimer) hint(); });
