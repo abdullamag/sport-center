@@ -1267,9 +1267,27 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     var rwShown = 0;                                   // какой манекен сейчас виден за шторкой
     function playActive() {
       vids.forEach(function (v, i) {
-        if (i === rwShown && rwOpen && visible && !reduce) { v.preload = 'auto'; v.play().catch(function () {}); } else v.pause();
+        if (i === rwShown && shouldPlay()) { v.preload = 'auto'; if (v.paused) v.play().catch(function () {}); } else if (!v.paused) v.pause();
       });
     }
+    function shouldPlay() { return rwOpen && visible && !reduce && !document.hidden; }
+    // iPhone ставит видео на паузу, когда приложение уходит в фон, и само не возобновляет — запускаем снова
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) playActive(); });
+    window.addEventListener('pageshow', function () { playActive(); });
+    window.addEventListener('focus', function () { playActive(); });
+    // в режиме энергосбережения iOS не даёт видео стартовать само — первое касание экрана его запускает
+    ['touchend', 'click'].forEach(function (t) {
+      document.addEventListener(t, function () { var v = vids[rwShown]; if (v && v.paused && shouldPlay()) playActive(); }, { passive: true, capture: true });
+    });
+    // страховка: если видео встало само (сбой, буфер), мягко перезапускаем, не чаще раза в 2 секунды
+    var lastKick = 0;
+    vids.forEach(function (v, i) {
+      v.addEventListener('pause', function () {
+        if (i !== rwShown || !shouldPlay() || Date.now() - lastKick < 2000) return;
+        lastKick = Date.now(); setTimeout(function () { if (i === rwShown && shouldPlay() && v.paused) v.play().catch(function () {}); }, 300);
+      });
+      v.addEventListener('ended', function () { if (i === rwShown && shouldPlay()) { v.currentTime = 0; v.play().catch(function () {}); } });
+    });
     function show(i) {
       if (i === rwShown) return;
       if (vids[rwShown]) vids[rwShown].classList.remove('on'); vids[i].classList.add('on'); rwShown = i;
