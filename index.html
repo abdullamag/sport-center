@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Sport Center — демо</title>
+<title>ARVEN — демо</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-title" content="Sport Center">
+<meta name="apple-mobile-web-app-title" content="ARVEN">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#ffffff">
@@ -326,7 +326,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 </head>
 <body>
 
-<div class="demo">Демо-версия · концепт приложения для Sport Center</div>
+<div class="demo">Демо · концепт приложения магазина одежды</div>
 
 <div class="install" id="install" hidden>
   <div class="wrap">
@@ -338,7 +338,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 
 <header>
   <div class="wrap">
-    <a class="logo" href="#"><img src="icons/logo-round.png" width="26" height="26" alt="" style="border-radius:50%">Sport Center</a>
+    <a class="logo" href="#"><img src="icons/logo-round.png" width="26" height="26" alt="" style="border-radius:50%">ARVEN</a>
     <div style="display:flex">
     <button class="bchip press" id="bchip" data-open="bonus" aria-label="Бонусы"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.8 6.2 20.3l1.6-6.6L2.6 9.3l6.8-.5z"/></svg><span id="bval">0</span></button>
     <button class="icon press" id="ordersBtn" data-open="orders" aria-label="Мои заказы" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="badge dot" id="ordersDot" hidden></span></button>
@@ -358,7 +358,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <div class="feed" id="feed"></div>
 </main>
 
-<footer><div class="wrap">Кизляр — Доценко 1 · пер. Рыбный 15 · 9:00–19:00<br>Каспийск — ул. Советская 16 · 10:00–22:00<br>WhatsApp +7 938 000-30-50</div></footer>
+<footer><div class="wrap">ARVEN Центр — ул. Садовая 24 · 10:00–21:00<br>ARVEN Север — пр. Победы 107 · 10:00–22:00<br>WhatsApp +7 900 410-25-25</div></footer>
 
 <dialog class="page" id="pv" aria-labelledby="pName">
   <div class="toast" role="status" aria-live="polite"></div>
@@ -459,13 +459,21 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <div class="pills" id="tryStores" role="group" aria-label="Магазин"></div>
   <p class="sub" id="tryAddr"></p>
   <div style="margin-top:28px"><a class="btn press" id="tryGo" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
-  <p class="note">Откроется чат с магазином: +7 938 000-30-50.<br>Сообщение уже будет написано — останется отправить.</p>
+  <p class="note">Откроется чат с магазином: +7 900 410-25-25.<br>Сообщение уже будет написано — останется отправить.</p>
+</dialog>
+
+<dialog class="sheet" id="demoChat" aria-labelledby="demoChatH">
+  <div class="top"><button class="icon press" data-close aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <h2 id="demoChatH">Здесь откроется чат</h2>
+  <p class="sub">В рабочей версии приложение откроет WhatsApp или Telegram магазина с готовым сообщением:</p>
+  <pre id="demoChatText" style="white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.5;background:var(--soft);border-radius:var(--r);padding:14px 16px;margin:16px 0 24px"></pre>
+  <button class="btn press" data-close>Понятно</button>
 </dialog>
 
 <dialog class="sheet" id="ios" aria-labelledby="iosH">
   <div class="top"><button class="icon press" data-close aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <img src="icons/icon-192.png" width="64" height="64" alt="" style="display:block;border-radius:15px;margin:0 0 16px">
-  <h2 id="iosH">Sport Center на экране «Домой»</h2>
+  <h2 id="iosH">ARVEN на экране «Домой»</h2>
   <p class="sub">Три шага. Без App Store.</p>
   <ol class="steps">
     <li><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5v10h14V11h-1"/></svg></i><span>Открой сайт в Safari и нажми <b>«Поделиться»</b> внизу экрана</span></li>
@@ -507,13 +515,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   var PR = window.PROMOS || [];
   function plural(n, f) { var m = n % 100, k = n % 10; return (m > 10 && m < 20) ? f[2] : k === 1 ? f[0] : (k > 1 && k < 5) ? f[1] : f[2]; }
   function promoFor(p) { return PR.find(function (x) { return x.cat === p.cat; }); }
-  function promoWhere(x) { return x.store === 'all' ? '' : ' · в ' + (x.store === 'ksp' ? 'Каспийске' : 'Кизляре'); }
+  function promoWhere(x) { return x.store === 'all' ? '' : ' · в магазине «' + STORES[x.store].name + '»'; }
   var lookById = function (id) { return L.find(function (l) { return l.id === id; }); };
   var $ = function (s) { return document.querySelector(s); };
-  var WA = '79380003050';
+  var WA = '79004102525';   // демо-номер, выдуманный
   var STORES = {
-    kz: { name: 'Кизляр', addr: 'Доценко 1 · пер. Рыбный 15 · 9:00–19:00' },
-    ksp: { name: 'Каспийск', addr: 'ул. Советская 16 · 10:00–22:00' }
+    kz: { name: 'Центр', addr: 'ул. Садовая 24 · 10:00–21:00' },
+    ksp: { name: 'Север', addr: 'пр. Победы 107 · 10:00–22:00' }
   };
   var mem = {
     get: function (k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } },
@@ -523,10 +531,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   var rub = function (n) { return n.toLocaleString('ru-RU') + ' ₽'; };
   var wa = function (text) { return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(text); };
 
-  var cart = mem.get('sc-cart', []).filter(function (l) { return byId(l.id); });
-  var liked = mem.get('sc-liked', {});
+  var cart = mem.get('ar-cart', []).filter(function (l) { return byId(l.id); });
+  var liked = mem.get('ar-liked', {});
   var cat = 'all';
-  var way = mem.get('sc-way', 'kz');
+  var way = mem.get('ar-way', 'kz');
   var cur = null, sel = { color: 0, size: null };
 
   /* ---------- dialogs ---------- */
@@ -599,8 +607,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 
   /* ---------- install banner ---------- */
   var standalone = window.navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
-  if (!standalone && !mem.get('sc-install-off', false)) $('#install').hidden = false;
-  $('#installClose').onclick = function () { $('#install').hidden = true; mem.set('sc-install-off', true); };
+  if (!standalone && !mem.get('ar-install-off', false)) $('#install').hidden = false;
+  $('#installClose').onclick = function () { $('#install').hidden = true; mem.set('ar-install-off', true); };
 
   /* ---------- feed ---------- */
   var HEART = '<i><svg width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></i>';
@@ -644,7 +652,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   };
   $('#feed').onclick = function (e) {
     var b = e.target.closest('[data-like]'); if (!b) return;
-    var id = b.dataset.like; liked[id] = !liked[id]; mem.set('sc-liked', liked);
+    var id = b.dataset.like; liked[id] = !liked[id]; mem.set('ar-liked', liked);
     b.classList.toggle('on', liked[id]); b.setAttribute('aria-pressed', liked[id]);
   };
 
@@ -878,24 +886,24 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   }
   $('#tryStores').onclick = function (e) {
     var b = e.target.closest('[data-store]'); if (!b) return;
-    way = b.dataset.store; mem.set('sc-way', way); renderTry();
+    way = b.dataset.store; mem.set('ar-way', way); renderTry();
   };
 
   /* ---------- cart ---------- */
   function count() { return cart.reduce(function (a, l) { return a + l.qty; }, 0); }
   function saveCart(bump) {
-    mem.set('sc-cart', cart);
+    mem.set('ar-cart', cart);
     var b = $('#badge'), n = count();
     b.hidden = !n; b.textContent = n;
     if (bump) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
   }
   var DLV = [['pickup', 'Самовывоз'], ['ozon', 'Ozon'], ['cdek', 'СДЭК'], ['other', 'Другое']];
   var DLV_NAME = { pickup: 'Самовывоз', ozon: 'Ozon', cdek: 'СДЭК', other: 'Другое' };
-  var co = Object.assign({ dlv: 'pickup', store: 'kz', name: '', phone: '', city: '', addr: '', note: '' }, mem.get('sc-co', {}));
-  var orders = mem.get('sc-orders', []);
+  var co = Object.assign({ dlv: 'pickup', store: 'kz', name: '', phone: '', city: '', addr: '', note: '' }, mem.get('ar-co', {}));
+  var orders = mem.get('ar-orders', []);
   var TEST_CONFIRM_MS = 6000;
-  function saveCo() { mem.set('sc-co', co); }
-  function saveOrders() { mem.set('sc-orders', orders); renderOrdersBtn(); }
+  function saveCo() { mem.set('ar-co', co); }
+  function saveOrders() { mem.set('ar-orders', orders); renderOrdersBtn(); }
 
   function pricing(c) {
     var total = 0, disc = 0, notes = [], rows = [];
@@ -906,7 +914,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       if (!units.length) return;
       var g = x.buy + x.free, freeN = Math.floor(units.length / g) * x.free;
       var here = x.store === 'all' || (c.dlv === 'pickup' && c.store === x.store);
-      if (!here) { notes.push('Акция ' + x.badge + ' на ' + x.cat.toLowerCase() + ' — при самовывозе ' + (x.store === 'ksp' ? 'из Каспийска' : 'из Кизляра') + '.'); return; }
+      if (!here) { notes.push('Акция ' + x.badge + ' на ' + x.cat.toLowerCase() + ' — при самовывозе ' + 'из магазина «' + STORES[x.store].name + '»' + '.'); return; }
       var rem = units.length % g;
       if (rem && rem >= x.buy) { var left = g - rem; notes.push('Добавьте ещё ' + left + ' ' + plural(left, x.unit) + ' — ' + (x.free === 1 ? 'одна из них будет бесплатно' : x.free + ' будут бесплатно') + '.'); }
       if (!freeN) return;
@@ -963,7 +971,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
         sumRows(pr) +
         '<div style="display:grid;gap:8px"><a class="btn press" target="_blank" rel="noopener" href="' + wa(orderText(pr)) + '">Написать в WhatsApp</a>' +
         '<a class="btn ghost press" id="coTg" target="_blank" rel="noopener" href="https://t.me/+' + WA + '">Написать в Telegram</a></div>' +
-        '<p class="note">WhatsApp и Telegram: +7 938 000-30-50.<br>Для Telegram текст заказа скопируется — останется вставить.</p>';
+        '<p class="note">WhatsApp и Telegram: +7 900 410-25-25.<br>Для Telegram текст заказа скопируется — останется вставить.</p>';
       return;
     }
     if (co.dlv === 'pickup') {
@@ -1009,7 +1017,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     }
     var pr = pricing(co);
     var o = {
-      id: 'SC-' + String(Math.floor(1000 + Math.random() * 9000)),
+      id: 'AR-' + String(Math.floor(1000 + Math.random() * 9000)),
       created: Date.now(), confirmAt: Date.now() + TEST_CONFIRM_MS,
       status: 'new', eta: null, paidAt: null,
       dlv: co.dlv, store: co.store, city: co.city.trim(), addr: co.addr.trim(),
@@ -1034,7 +1042,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   }
   function testEta(o) { // в рабочей версии дату ставит магазин в Telegram
     var now = new Date();
-    if (o.dlv === 'pickup') { var close = o.store === 'ksp' ? 21 : 18; return now.getHours() < close ? now.getTime() : now.getTime() + DAY; }
+    if (o.dlv === 'pickup') { var close = o.store === 'ksp' ? 21 : 20; return now.getHours() < close ? now.getTime() : now.getTime() + DAY; }
     return now.getTime() + (o.dlv === 'ozon' ? 6 : 4) * DAY;
   }
   function where(o) {
@@ -1138,7 +1146,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 
   /* ---------- бонусы (тест: один постоянный покупатель) ---------- */
   var BONUS_RATE = 0.05, BONUS_MAX_SHARE = 0.3;
-  var bonus = mem.get('sc-bonus', null) || { balance: 500, hist: [{ t: Date.now(), d: 500, label: 'Приветственные (тест)' }] };
+  var bonus = mem.get('ar-bonus', null) || { balance: 500, hist: [{ t: Date.now(), d: 500, label: 'Приветственные (тест)' }] };
   function earnOf(sum) { return Math.floor(sum * BONUS_RATE); }
   function earnHtml(sum) { return '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.8 6.2 20.3l1.6-6.6L2.6 9.3l6.8-.5z"/></svg>+' + earnOf(sum) + ' бонусов за покупку'; }
   function maxSpend(o) { return Math.max(0, Math.min(bonus.balance, Math.floor(o.pay * BONUS_MAX_SHARE))); }
@@ -1164,9 +1172,19 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   function bonusMove(d, label) {
     if (!d) return;
     bonus.balance += d; bonus.hist.unshift({ t: Date.now(), d: d, label: label });
-    mem.set('sc-bonus', bonus); renderBonus(true);
+    mem.set('ar-bonus', bonus); renderBonus(true);
   }
-  mem.set('sc-bonus', bonus); renderBonus(false);
+  mem.set('ar-bonus', bonus); renderBonus(false);
+
+  /* ---------- демо: чат с магазином ---------- */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="https://wa.me/"], a[href^="https://t.me/"]'); if (!a) return;
+    e.preventDefault();
+    var m = a.href.match(/[?&]text=([^&]*)/), txt = m ? decodeURIComponent(m[1]) : '';
+    $('#demoChatText').textContent = txt || 'Чат с магазином';
+    $('#demoChatText').hidden = !txt;
+    openDlg($('#demoChat'));
+  }, true);
 
   /* ---------- tactile feedback ---------- */
   function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
@@ -1239,7 +1257,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   /* ---------- примерочная: шторка, за которой меняется манекен ---------- */
   var RW = window.RUNWAY || [];
   if (RW.length) (function () {
-    var rwi = 0, rwOpen = mem.get('sc-rw-open', true), visible = true;
+    var rwi = 0, rwOpen = mem.get('ar-rw-open', true), visible = true;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var rwLooks = (window.LOOKS || []).map(function (l) {
       var k = -1; RW.forEach(function (o, j) { if (o.look === l.id) k = j; }); return { l: l, k: k };
@@ -1327,7 +1345,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     var hintTimer = null, animating = false;
     function down(x, y, t) {
       if (RW.length < 2) return;
-      clearTimeout(hintTimer); hintTimer = null; mem.set('sc-curtain-hint', true);   // палец важнее подсказки
+      clearTimeout(hintTimer); hintTimer = null; mem.set('ar-curtain-hint', true);   // палец важнее подсказки
       cancelAnimationFrame(anim);
       if (animating && p >= 1) rwi = target;          // прерванная смена образа засчитывается, а не откатывается
       animating = false;
@@ -1365,10 +1383,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     });
     // подсказка: при первом показе шторка чуть выглядывает из-за края
     function hint() {                                // показываем, только когда примерочная на экране и её никто не трогает
-      if (RW.length < 2 || reduce || mem.get('sc-curtain-hint', false)) return;
+      if (RW.length < 2 || reduce || mem.get('ar-curtain-hint', false)) return;
       hintTimer = setTimeout(function () {
         if (active || p || !rwOpen || !visible) { hintTimer = null; return; }
-        mem.set('sc-curtain-hint', true); begin(1);
+        mem.set('ar-curtain-hint', true); begin(1);
         tweenTo(0.22, function () { hintTimer = setTimeout(function () { hintTimer = null; tweenTo(0, function () { dir = 0; }); }, 350); });
       }, 1200);
     }
@@ -1386,11 +1404,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       var c = e.target.closest('.rw-card'); if (!c) return;
       var k = c.dataset.rwk == null ? -1 : +c.dataset.rwk;
       if (k < 0 || k === rwShown || !rwCurtain || animating) { location.hash = 'l-' + c.dataset.rwlook; return; }
-      if (!rwOpen) { rwOpen = true; mem.set('sc-rw-open', true); rwApply(true); }
-      clearTimeout(hintTimer); mem.set('sc-curtain-hint', true);
+      if (!rwOpen) { rwOpen = true; mem.set('ar-rw-open', true); rwApply(true); }
+      clearTimeout(hintTimer); mem.set('ar-curtain-hint', true);
       dir = k > rwi ? 1 : -1; target = k; finish(true);
     });
-    $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('sc-rw-open', rwOpen); rwApply(true); buzz(8); };
+    $('#rwTog').onclick = function () { rwOpen = !rwOpen; mem.set('ar-rw-open', rwOpen); rwApply(true); buzz(8); };
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
       es.forEach(function (en) { visible = en.isIntersecting; playActive(); if (visible && !hintTimer) hint(); });
     }, { threshold: 0.2 }).observe(stage);
