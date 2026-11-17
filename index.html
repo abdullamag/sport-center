@@ -320,12 +320,41 @@ dialog.closing::backdrop{animation:fadeout .28s both}
   .rw-card.on em{opacity:1}
   .rw-card svg{color:var(--mute);flex:none}
 }
+/* ---------- тема «Орнамент» (включается ?theme=ornament) ---------- */
+.orn-bg{display:none}
+html.orn{--ink:#F4F1EC;--mute:#B7B2AB;--line:rgba(255,255,255,.14);--soft:rgba(255,255,255,.08);background:#0b0b0d;color-scheme:dark}
+html.orn body{background:transparent;color:var(--ink)}
+html.orn .orn-bg{display:block;position:fixed;inset:0;z-index:-1;overflow:hidden;background:#0b0b0d}
+html.orn .orn-tile{position:absolute;left:0;right:0;top:0;height:300%;background:url(img/ornament-tile.jpg) left top/100% auto repeat-y;will-change:transform}
+@media(min-width:720px){html.orn .orn-tile{background-size:900px auto}}
+html.orn .orn-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,8,10,.55),rgba(8,8,10,.25) 55%,rgba(8,8,10,.1))}
+html.orn .hero h1,html.orn .hero p,html.orn .tab,html.orn .nm,html.orn .pr{text-shadow:0 1px 12px rgba(0,0,0,.8)}
+html.orn .demo{background:rgba(0,0,0,.5);border-color:var(--line)}
+html.orn .install{background:rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .install .get,html.orn .btn{background:#F4F1EC;color:#111}
+html.orn .badge{background:#F4F1EC;color:#111}
+html.orn .bchip{background:rgba(0,0,0,.45)}
+html.orn .promo{background:rgba(0,0,0,.55);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .rw-stage{background:#fff;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+html.orn .rw-in{margin:0}
+html.orn .rw-tog{background:rgba(255,255,255,.12)}
+html.orn .rw-card{background:rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .rw-card.on{background:rgba(0,0,0,.6);border-color:#F4F1EC}
+html.orn .rw-dots i{background:rgba(255,255,255,.3)}html.orn .rw-dots i.on{background:#F4F1EC}
+html.orn footer{background:rgba(0,0,0,.55)}
+html.orn .logo img{box-shadow:0 0 0 1.5px rgba(255,255,255,.55)}
+html.orn .tag{color:#111}html.orn .tag.hot{background:#111;color:#fff}
+html.orn .heart svg{stroke:#111}html.orn .heart.on svg{stroke:var(--brand)}
+/* окна (товар, корзина, оформление) остаются светлыми */
+html.orn dialog{--ink:#111;--mute:#6E6E73;--line:#EDEDF0;--soft:#F5F5F7;color:#111;color-scheme:light}
+html.orn dialog .btn{background:#111;color:#fff}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--mute);line-height:1.7}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after,::backdrop{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
+<div class="orn-bg" aria-hidden="true"><div class="orn-tile"></div></div>
 <div class="demo">Демо · концепт приложения магазина одежды</div>
 
 <div class="install" id="install" hidden>
@@ -486,6 +515,19 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 <script src="products.js?v=1794318265"></script>
 <script>
 (function () {
+  /* ---------- тема «Орнамент» ---------- */
+  if (/[?&]theme=ornament\b/.test(location.search)) {
+    document.documentElement.classList.add('orn');
+    var tile = document.querySelector('.orn-tile'), ticking = false, still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function paint() {
+      ticking = false;
+      var need = window.innerHeight + document.documentElement.scrollHeight * 0.35 + 400;   // узора хватает на всю длину страницы
+      if (Math.abs(tile.offsetHeight - need) > 200) tile.style.height = need + 'px';
+      tile.style.transform = 'translate3d(0,' + (-window.scrollY * 0.35) + 'px,0)';
+    }
+    window.addEventListener('load', paint); window.addEventListener('resize', paint); paint();
+    if (!still) window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+  }
   /* ---------- без увеличения экрана (правило всех проектов) ---------- */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
     document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false });
