@@ -460,7 +460,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 </header>
 
 <main class="wrap">
-  <div class="styles"><div class="seg" role="group" aria-label="Стиль сайта"><button class="press" data-style="white" aria-pressed="true">Светлый</button><button class="press" data-style="orn" aria-pressed="false">Орнамент</button></div></div>
+  <div class="styles"><div class="seg" role="group" aria-label="Стиль сайта"><button class="press" data-style="orn" aria-pressed="true">Орнамент</button><button class="press" data-style="white" aria-pressed="false">Светлый</button></div></div>
   <section class="hero">
     <h1>Осень.<br>Зима.</h1>
     <p>Новая коллекция уже в магазинах.</p>
@@ -598,7 +598,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794952884"></script>
+<script src="products.js?v=1794953535"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -623,13 +623,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       root.classList.toggle('orn', orn); root.classList.toggle('orn-dark', orn);
       if (tc) tc.content = orn ? '#0b0b0d' : '#ffffff';
       [].forEach.call(document.querySelectorAll('[data-style]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.style === st)); });
-      try { if (save) localStorage.setItem('ar-style', st); } catch (e) {}
       paint();
       window.dispatchEvent(new Event('scroll'));   // видео манекена само встанет на паузу/продолжит
     }
-    var q = (location.search.match(/[?&]style=(orn|white)\b/) || [])[1], saved = null;
-    try { saved = localStorage.getItem('ar-style'); } catch (e) {}
-    setStyle(q || saved || 'white', false);
+    var q = (location.search.match(/[?&]style=(orn|white)\b/) || [])[1];
+    setStyle(q || 'orn', false);   // при открытии всегда «Орнамент»; «Светлый» — только по кнопке или ?style=white
     document.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-style]');
       if (b) { setStyle(b.dataset.style, true); window.scrollTo(0, 0); }
@@ -1833,7 +1831,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 <script>
 /* ---------- автообновление: иконка на экране «Домой» сама подхватывает новую версию ---------- */
 (function () {
-  var BUILD = /*build*/'1794952884', busy = false, last = 0;
+  var BUILD = /*build*/'1794953535', busy = false, last = 0;
   function check() {
     if (busy || Date.now() - last < 15000) return;   // не чаще раза в 15 секунд
     busy = true; last = Date.now();
