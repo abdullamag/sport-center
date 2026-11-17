@@ -404,6 +404,21 @@ html.orn .seg button{color:rgba(255,255,255,.85)}html.orn .seg button[aria-press
 .sc-hint em{font-style:normal;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes scSwipe{0%{transform:translateX(34px);opacity:0}15%{opacity:1}70%{transform:translateX(-34px);opacity:1}100%{transform:translateX(-34px);opacity:0}}
 @media(prefers-reduced-motion:reduce){.sc-hint .hand{animation:none}}
+/* магазин: мужской / женский бутик */
+.shops{padding-top:8px}.shops+.styles{padding-top:6px}
+.w-kicker{display:none}
+.w-empty{grid-column:1/-1;padding:56px 20px 72px;text-align:center}
+.w-empty b{display:block;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:400;font-size:30px;letter-spacing:-.01em}
+.w-empty span{display:block;margin-top:8px;font-size:14px;color:var(--mute)}
+html.women{--ink:#2A1F1D;--mute:#8C7B74;--line:#EADFD6;--soft:#F3EAE2;--brand:#B4646F;background:#FBF7F3}
+html.women body{background:#FBF7F3}
+html.women .demo{background:#FBF7F3}
+html.women .shops+.styles,html.women .runway,html.women .scene,html.women .sc-space{display:none}
+html.women .seg button[aria-pressed=true]{background:#2A1F1D;color:#FBF7F3}
+html.women .w-kicker{display:block;font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--brand)}
+html.women .hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-style:italic;letter-spacing:-.02em;margin-top:10px}
+html.women .tabs:empty,html.women .tabs.solo{display:none}
+body.leaving{opacity:0;transition:opacity .25s}
 /* переключатель стиля */
 .styles{display:flex;justify-content:center;padding:10px 0 0}
 .seg{display:inline-flex;padding:3px;border-radius:22px;background:var(--soft);position:relative}
@@ -446,8 +461,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 </header>
 
 <main class="wrap">
+  <div class="styles shops"><div class="seg" role="group" aria-label="Магазин"><button class="press" data-shop="m" aria-pressed="true">Мужской</button><button class="press" data-shop="w" aria-pressed="false">Женский бутик</button></div></div>
   <div class="styles"><div class="seg" role="group" aria-label="Стиль сайта"><button class="press" data-style="white" aria-pressed="true">Светлый</button><button class="press" data-style="orn" aria-pressed="false">Орнамент</button></div></div>
   <section class="hero">
+    <small class="w-kicker">Женский бутик</small>
     <h1>Осень.<br>Зима.</h1>
     <p>Новая коллекция уже в магазинах.</p>
   </section>
@@ -584,9 +601,29 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794919234"></script>
+<script src="products.js?v=1794921818"></script>
 <script>
 (function () {
+  /* ---------- магазин: мужской / женский бутик (свой каталог, своя корзина) ---------- */
+  var SHOP = (location.search.match(/[?&]shop=(w|m)\b/) || [])[1];
+  try { if (SHOP) localStorage.setItem('ar-shop', SHOP); else SHOP = localStorage.getItem('ar-shop') || 'm'; } catch (e) { SHOP = SHOP || 'm'; }
+  var WOMEN = SHOP === 'w';
+  if (WOMEN) {
+    document.documentElement.classList.add('women');
+    window.PRODUCTS = window.W_PRODUCTS || []; window.LOOKS = window.W_LOOKS || []; window.PROMOS = window.W_PROMOS || [];
+    window.RUNWAY = []; window.SCENE = null;   // витрину для бутика сделаем отдельно
+    document.title = 'ARVEN — Женский бутик';
+  }
+  [].forEach.call(document.querySelectorAll('[data-shop]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.shop === SHOP)); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-shop]');
+    if (!b || b.dataset.shop === SHOP) return;
+    try { localStorage.setItem('ar-shop', b.dataset.shop); } catch (err) {}
+    document.body.classList.add('leaving');
+    var q = location.search.replace(/[?&](shop|style)=[^&]*/g, '').replace(/^&/, '?');
+    setTimeout(function () { location.href = location.pathname + (q && q !== '?' ? q + '&' : '?') + 'shop=' + b.dataset.shop; }, 220);
+  });
+
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
   (function () {
     var root = document.documentElement, bgLayer = document.querySelector('.orn-bg'), tile = document.querySelector('.orn-tile'), ticking = false;
@@ -615,7 +652,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     }
     var q = (location.search.match(/[?&]style=(orn|white)\b/) || [])[1], saved = null;
     try { saved = localStorage.getItem('ar-style'); } catch (e) {}
-    setStyle(q || saved || 'white', false);
+    setStyle(WOMEN ? 'white' : (q || saved || 'white'), false);
     document.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-style]');
       if (b) { setStyle(b.dataset.style, true); window.scrollTo(0, 0); }
@@ -662,8 +699,9 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     ksp: { name: 'Север', addr: 'пр. Победы 107 · 10:00–22:00' }
   };
   var mem = {
-    get: function (k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } },
-    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    key: function (k) { return WOMEN && /^ar-(cart|liked|orders)$/.test(k) ? 'arw-' + k.slice(3) : k; },
+    get: function (k, d) { try { var v = JSON.parse(localStorage.getItem(mem.key(k))); return v == null ? d : v; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(mem.key(k), JSON.stringify(v)); } catch (e) {} }
   };
   var byId = function (id) { return P.find(function (p) { return p.id === id; }); };
   var rub = function (n) { return n.toLocaleString('ru-RU') + ' ₽'; };
@@ -781,7 +819,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
         (p.n > 1 ? '<span class="pdots" aria-hidden="true">' + new Array(Math.min(p.n, 6) + 1).join('<i></i>') + '</span>' : '') + '</span>' +
         '<span class="nm">' + p.name + '</span><span class="pr">' + rub(p.price) + '</span></a>' +
         '<button class="heart press' + (liked[p.id] ? ' on' : '') + '" data-like="' + p.id + '" aria-pressed="' + !!liked[p.id] + '" aria-label="Сохранить: ' + p.name + '">' + HEART + '</button></article>';
-    }).join('') || '<p class="empty">Здесь пока пусто.</p>';
+    }).join('') || (WOMEN && !P.length && !L.length
+      ? '<div class="w-empty"><b>Коллекция готовится</b><span>Скоро здесь появятся платья, костюмы и аксессуары бутика.</span></div>'
+      : '<p class="empty">Здесь пока пусто.</p>');
+    $('#tabs').classList.toggle('solo', !P.length && !L.length);
     markCached($('#feed'));
   }
   $('#tabs').onclick = function (e) {

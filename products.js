@@ -417,3 +417,9 @@ window.PRODUCTS = [
     photos: ['img/windbreaker-black-1.jpg?v=2', 'img/windbreaker-grey-1.jpg?v=2']
   }
 ];
+
+// ===== Женский бутик =====
+// Тот же формат, что и выше. Пока пусто — каталог пришлют позже.
+window.W_LOOKS = [];
+window.W_PRODUCTS = [];
+window.W_PROMOS = [];
