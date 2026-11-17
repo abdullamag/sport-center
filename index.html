@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>ARVEN — демо</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -10,6 +10,9 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="ARVEN">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- на экране «Домой»: сайт заходит под строку с часами и зарядом, сама строка прозрачная -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#ffffff">
 
@@ -121,7 +124,7 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .pdots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:4px;pointer-events:none}
 .pdots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 0 2px rgba(0,0,0,.35)}
 .page[open] .gal{animation:fade .6s ease both}
-.back{position:absolute;top:14px;left:14px;border-radius:50%;background:rgba(255,255,255,.92);z-index:1}
+.back{position:absolute;top:calc(14px + env(safe-area-inset-top));left:14px;border-radius:50%;background:rgba(255,255,255,.92);z-index:1}
 .dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}
 .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.6);transition:width .4s var(--ease),background .4s}
 .dots i.on{width:18px;background:#fff}
@@ -418,6 +421,9 @@ html.orn .seg button{color:rgba(255,255,255,.85)}html.orn .seg button[aria-press
 .sc-hint em{font-style:normal;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes scSwipe{0%{transform:translateX(34px);opacity:0}15%{opacity:1}70%{transform:translateX(-34px);opacity:1}100%{transform:translateX(-34px);opacity:0}}
 @media(prefers-reduced-motion:reduce){.sc-hint .hand{animation:none}}
+/* полноэкранный режим: контент не прячется под вырез и строку состояния, а фон — заходит под них */
+body{padding-top:env(safe-area-inset-top)}
+.page .top{padding-top:env(safe-area-inset-top)}
 /* переключатель стиля */
 .styles{display:flex;justify-content:center;padding:10px 0 0}
 .seg{display:inline-flex;padding:3px;border-radius:22px;background:var(--soft);position:relative}
@@ -598,7 +604,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794953535"></script>
+<script src="products.js?v=1794953932"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -1831,7 +1837,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 <script>
 /* ---------- автообновление: иконка на экране «Домой» сама подхватывает новую версию ---------- */
 (function () {
-  var BUILD = /*build*/'1794953535', busy = false, last = 0;
+  var BUILD = /*build*/'1794953932', busy = false, last = 0;
   function check() {
     if (busy || Date.now() - last < 15000) return;   // не чаще раза в 15 секунд
     busy = true; last = Date.now();
