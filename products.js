@@ -12,14 +12,14 @@ window.RUNWAY = [
 // Стиль «Орнамент»: общий кадр, камера наезжает на одного человека, свайп — к следующему.
 // cx, cy — центр человека на картинке (в пикселях исходника), h — высота кадра (меньше = ближе).
 window.SCENE = {
-  img: 'img/scene-1.jpg', w: 1672, h: 941,
+  img: 'img/scene-2.jpg', w: 1672, h: 941,
   people: [
-    { look: 'look-windbreaker', cx: 200, cy: 495, h: 800 },
-    { look: 'look-windbreaker-grey', cx: 465, cy: 590, h: 640 },
-    { look: 'look-suit', cx: 718, cy: 470, h: 800 },
-    { look: 'look-zipnavy', cx: 1045, cy: 440, h: 800 },
-    { look: 'look-zipgrey', cx: 1270, cy: 650, h: 620 },
-    { look: 'look-horse', cx: 1458, cy: 480, h: 800 }
+    { look: 'look-windbreaker', cx: 446, cy: 626, h: 680 },
+    { look: 'look-windbreaker-grey', cx: 610, cy: 700, h: 560 },
+    { look: 'look-suit', cx: 756, cy: 626, h: 680 },
+    { look: 'look-zipnavy', cx: 955, cy: 582, h: 600 },
+    { look: 'look-zipgrey', cx: 1078, cy: 730, h: 540 },
+    { look: 'look-horse', cx: 1214, cy: 637, h: 640 }
   ]
 };
 

@@ -542,7 +542,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794918278"></script>
+<script src="products.js?v=1794918493"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -1377,7 +1377,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       var A = ppl[a], B = ppl[b], e = t;
       var cx = A.cx + (B.cx - A.cx) * e, cy = A.cy + (B.cy - A.cy) * e;
       // в середине пути камера чуть отъезжает — как при панораме
-      var h = A.h + (B.h - A.h) * e + Math.sin(Math.PI * e) * 120;
+      var h = A.h + (B.h - A.h) * e + Math.sin(Math.PI * e) * 90;
       return { cx: cx, cy: cy, h: Math.min(h, SC.h) };
     }
     function draw() {
