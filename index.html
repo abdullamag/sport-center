@@ -362,22 +362,14 @@ html.orn .scene{display:block;margin-top:24px}
 .sc-hint em{font-style:normal;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes scSwipe{0%{transform:translateX(34px);opacity:0}15%{opacity:1}70%{transform:translateX(-34px);opacity:1}100%{transform:translateX(-34px);opacity:0}}
 .sc-under{text-align:center;font-size:13px;color:var(--mute);margin:12px 0 0}
-html.orn .sc-under{color:#C9C4BD;text-shadow:0 1px 8px rgba(0,0,0,.8)}
 @media(prefers-reduced-motion:reduce){.sc-hint .hand{animation:none}}
 /* переключатель стиля */
 .styles{display:flex;justify-content:center;padding:10px 0 0}
 .seg{display:inline-flex;padding:3px;border-radius:22px;background:var(--soft);position:relative}
 .seg button{height:34px;padding:0 16px;border-radius:17px;font-size:13px;font-weight:600;color:var(--mute);transition:background-color .35s var(--ease),color .35s,box-shadow .35s}
 .seg button[aria-pressed=true]{background:#fff;color:#111;box-shadow:0 1px 6px rgba(0,0,0,.12)}
-html.orn .seg{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-html.orn .seg button{color:#D8D3CC}html.orn .seg button[aria-pressed=true]{color:#111}
 /* стиль «Орнамент»: узор на всю страницу, манекена нет (место под будущий блок) */
 html.orn .runway{display:none}
-html.orn .hero h1,html.orn .hero p{text-shadow:0 2px 18px rgba(0,0,0,.6)}
-html.orn header,html.orn .hero,html.orn .install{--ink:#F4F1EC;--mute:#C9C4BD;--soft:rgba(255,255,255,.1);color:var(--ink)}
-html.orn .demo{background:rgba(0,0,0,.6);color:#B7B2AB;border-bottom-color:rgba(255,255,255,.1)}
-html.orn .install .get{background:#F4F1EC;color:#111}
-html.orn .badge{background:#F4F1EC;color:#111}
 html.orn .promos,html.orn .tabs,html.orn .feed,html.orn footer{--ink:#F4F1EC;--mute:#B7B2AB;--line:rgba(255,255,255,.14);--soft:rgba(255,255,255,.08);color:var(--ink)}
 html.orn .tab,html.orn .nm,html.orn .pr{text-shadow:0 1px 10px rgba(0,0,0,.8)}
 html.orn .promo{background:rgba(0,0,0,.55);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -561,15 +553,20 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     function paint() {
       ticking = false;
       if (!root.classList.contains('orn')) return;
+      // линия перехода — сразу под сценой: пока парни на экране, страница белая, дальше снизу поднимается узор
+      var anchor = document.querySelector('.sc-under') || document.querySelector('.hero');
+      var line = anchor ? anchor.getBoundingClientRect().bottom + 24 : window.innerHeight;
+      bgLayer.style.setProperty('--l', Math.round(line + 160) + 'px');
+      var dark = line < 40;
+      if (dark !== root.classList.contains('orn-dark')) { root.classList.toggle('orn-dark', dark); if (tc) tc.content = dark ? '#0b0b0d' : '#ffffff'; }
       var need = window.innerHeight + document.documentElement.scrollHeight * 0.35 + 400;
       if (Math.abs(tile.offsetHeight - need) > 200) tile.style.height = need + 'px';
       if (!still) tile.style.transform = 'translate3d(0,' + (-window.scrollY * 0.35) + 'px,0)';
     }
     function setStyle(st, save) {
       var orn = st === 'orn';
-      root.classList.toggle('orn', orn); root.classList.toggle('orn-dark', orn);
-      bgLayer.style.setProperty('--l', '-400px');   // узор сразу на всю страницу
-      if (tc) tc.content = orn ? '#0b0b0d' : '#ffffff';
+      root.classList.toggle('orn', orn); root.classList.remove('orn-dark');
+      if (tc) tc.content = '#ffffff';
       [].forEach.call(document.querySelectorAll('[data-style]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.style === st)); });
       try { if (save) localStorage.setItem('ar-style', st); } catch (e) {}
       paint();
@@ -584,7 +581,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     });
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
     window.addEventListener('load', paint); window.addEventListener('resize', paint);
-    setInterval(paint, 1000);
+    setInterval(paint, 500);
   })();
   /* ---------- без увеличения экрана (правило всех проектов) ---------- */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
