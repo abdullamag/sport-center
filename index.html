@@ -598,7 +598,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794932859"></script>
+<script src="products.js?v=1794933049"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -1828,6 +1828,28 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   gvSetup();
 
   renderTabs(); renderFeed(); saveCart(); route();
+})();
+</script>
+<script>
+/* ---------- автообновление: иконка на экране «Домой» сама подхватывает новую версию ---------- */
+(function () {
+  var BUILD = /*build*/'1794933049', busy = false, last = 0;
+  function check() {
+    if (busy || Date.now() - last < 15000) return;   // не чаще раза в 15 секунд
+    busy = true; last = Date.now();
+    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      t = (t || '').trim();
+      if (!t || t === BUILD) return;
+      // не мешаем, если человек оформляет заказ или листает товар — обновимся при следующем открытии
+      if (document.querySelector('dialog[open]')) return;
+      try { if (sessionStorage.getItem('ar-upd') === t) return; sessionStorage.setItem('ar-upd', t); } catch (e) {}   // одна попытка на версию — без зацикливания
+      var u = location.pathname + '?v=' + t + location.search.replace(/^\?/, '&').replace(/&v=[^&]*/g, '') + location.hash;
+      location.replace(u);
+    }).catch(function () {}).then(function () { busy = false; });
+  }
+  check();
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') check(); });
+  window.addEventListener('pageshow', check); window.addEventListener('focus', check);
 })();
 </script>
 </body>
