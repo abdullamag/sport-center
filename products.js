@@ -54,6 +54,54 @@ window.LOOKS = [
       { id: 'bottino-cargo-black', color: 'Чёрный' },
       { id: 'sneakers-navy', color: 'Тёмно-синий' }
     ]
+  },
+  {
+    id: 'look-horse',
+    name: 'Лонгслив с конём и джоггеры',
+    photos: ['img/look-horse-1.jpg'],
+    items: [
+      { id: 'longsleeve-horse', color: 'Бордовый' },
+      { id: 'joggers-orange', color: 'Чёрный' },
+      { id: 'sneakers-ribbed', color: 'Графит' }
+    ]
+  },
+  {
+    id: 'look-zipgrey',
+    name: 'Светлый кардиган и чёрные джинсы',
+    photos: ['img/look-zipgrey-1.jpg'],
+    items: [
+      { id: 'zip-knit', color: 'Светло-серый' },
+      { id: 'jeans-straight', color: 'Чёрный' },
+      { id: 'sneakers-ring', color: 'Тёмно-синий' }
+    ]
+  },
+  {
+    id: 'look-zipnavy',
+    name: 'Тёмный кардиган и индиго',
+    photos: ['img/look-zipnavy-1.jpg'],
+    items: [
+      { id: 'zip-knit', color: 'Тёмно-синий' },
+      { id: 'jeans-straight', color: 'Индиго' },
+      { id: 'sneakers-suede', color: 'Тёмно-синий' }
+    ]
+  },
+  {
+    id: 'look-suit',
+    name: 'Серый костюм с бордовым капюшоном',
+    photos: ['img/look-suit-1.jpg'],
+    items: [
+      { id: 'suit-hood', color: 'Серый меланж' },
+      { id: 'sneakers-knit', color: 'Бордовый' }
+    ]
+  },
+  {
+    id: 'look-windbreaker',
+    name: 'Костюм-ветровка',
+    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg'],
+    items: [
+      { id: 'windbreaker-suit', color: 'Чёрный' },
+      { id: 'sneakers-runner', color: 'Чёрный' }
+    ]
   }
 ];
 
@@ -215,5 +263,127 @@ window.PRODUCTS = [
     sizes: CLOTHES,
     colors: [{ name: 'Чёрный', hex: '#111111', photo: 0 }],
     photos: ['img/cargo-black-1.jpg', 'img/look-black-1.jpg']
+  },
+  {
+    id: 'longsleeve-horse',
+    cat: 'Лонгсливы',
+    name: 'Лонгслив с вышитым конём',
+    price: 2990,
+    desc: 'Плотный гладкий хлопок, объёмная вышивка с переходом цвета и контрастная окантовка ворота.',
+    sizes: CLOTHES,
+    colors: [{ name: 'Бордовый', hex: '#5E1F27', photo: 0 }],
+    photos: ['img/look-horse-1.jpg']
+  },
+  {
+    id: 'joggers-orange',
+    cat: 'Брюки',
+    name: 'Джоггеры с контрастным поясом',
+    price: 3490,
+    desc: 'Мягкий трикотаж, широкий пояс с оранжевым кантом и накладной карман на молнии.',
+    sizes: CLOTHES,
+    colors: [{ name: 'Чёрный', hex: '#14161B', photo: 0 }],
+    photos: ['img/look-horse-1.jpg']
+  },
+  {
+    id: 'sneakers-ribbed',
+    cat: 'Обувь',
+    name: 'Кроссовки на рифлёной подошве',
+    price: 5990,
+    desc: 'Сетка и замша, лёгкая рифлёная подошва с ярким оранжевым элементом.',
+    sizes: SHOES,
+    colors: [{ name: 'Графит', hex: '#4A4C50', photo: 0 }],
+    photos: ['img/look-horse-1.jpg']
+  },
+  {
+    id: 'zip-knit',
+    cat: 'Кардиганы',
+    name: 'Кардиган на молнии с надписью',
+    price: 3990,
+    desc: 'Тонкая шерстяная вязка, высокий воротник с вязаной надписью, полосатые манжеты и низ.',
+    sizes: CLOTHES,
+    colors: [
+      { name: 'Светло-серый', hex: '#C9CACC', photo: 0 },
+      { name: 'Тёмно-синий', hex: '#161B2B', photo: 1 }
+    ],
+    photos: ['img/look-zipgrey-1.jpg', 'img/look-zipnavy-1.jpg']
+  },
+  {
+    id: 'jeans-straight',
+    cat: 'Брюки',
+    name: 'Джинсы прямые',
+    price: 3490,
+    desc: 'Плотный деним с контрастной строчкой, классическая посадка и прямой крой.',
+    sizes: CLOTHES,
+    colors: [
+      { name: 'Чёрный', hex: '#16171B', photo: 0 },
+      { name: 'Индиго', hex: '#22283F', photo: 1 }
+    ],
+    photos: ['img/look-zipgrey-1.jpg', 'img/look-zipnavy-1.jpg']
+  },
+  {
+    id: 'sneakers-ring',
+    cat: 'Обувь',
+    name: 'Кеды с белой эмблемой',
+    price: 4990,
+    desc: 'Гладкая кожа и замша, рельефная белая эмблема сбоку и молочная подошва.',
+    sizes: SHOES,
+    colors: [{ name: 'Тёмно-синий', hex: '#1C2238', photo: 0 }],
+    photos: ['img/look-zipgrey-1.jpg']
+  },
+  {
+    id: 'sneakers-suede',
+    cat: 'Обувь',
+    name: 'Кеды кожа и замша',
+    price: 4990,
+    desc: 'Классический силуэт, вставки из замши, молочные шнурки и тонкая подошва.',
+    sizes: SHOES,
+    colors: [{ name: 'Тёмно-синий', hex: '#1E2540', photo: 0 }],
+    photos: ['img/look-zipnavy-1.jpg']
+  },
+  {
+    id: 'suit-hood',
+    cat: 'Костюмы',
+    name: 'Костюм с бордовым капюшоном',
+    price: 6990,
+    desc: 'Толстовка на молнии и брюки из мягкого трикотажа, бордовый капюшон и вставки на карманах.',
+    sizes: CLOTHES,
+    colors: [{ name: 'Серый меланж', hex: '#C4C4C2', photo: 0 }],
+    photos: ['img/look-suit-1.jpg']
+  },
+  {
+    id: 'sneakers-knit',
+    cat: 'Обувь',
+    name: 'Кроссовки трикотажные',
+    price: 5490,
+    desc: 'Дышащий трикотажный верх, кожаные вставки и мягкая белая подошва.',
+    sizes: SHOES,
+    colors: [{ name: 'Бордовый', hex: '#4A1C22', photo: 0 }],
+    photos: ['img/look-suit-1.jpg']
+  },
+  {
+    id: 'windbreaker-suit',
+    cat: 'Костюмы',
+    name: 'Костюм-ветровка',
+    price: 5990,
+    desc: 'Лёгкий нейлон с эффектом мятой ткани, куртка с капюшоном и брюки на манжетах.',
+    sizes: CLOTHES,
+    colors: [
+      { name: 'Чёрный', hex: '#111214', photo: 0 },
+      { name: 'Графитовый', hex: '#5A5F6B', photo: 1 }
+    ],
+    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg']
+  },
+  {
+    id: 'sneakers-runner',
+    cat: 'Обувь',
+    name: 'Кроссовки на прозрачной подошве',
+    price: 5990,
+    desc: 'Сетка и замша, высокая подошва с рисунком внутри, белые шнурки.',
+    sizes: SHOES,
+    colors: [
+      { name: 'Чёрный', hex: '#15161A', photo: 0 },
+      { name: 'Серый', hex: '#8E9097', photo: 1 }
+    ],
+    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg']
   }
 ];

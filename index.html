@@ -333,6 +333,20 @@ html.orn body{background:transparent}
 html{background:#fff;transition:background-color .3s}
 html.orn.orn-dark{background:#0b0b0d}
 /* всё, что ниже примерочной, лежит на узоре — светлый текст */
+/* переключатель стиля */
+.styles{display:flex;justify-content:center;padding:10px 0 0}
+.seg{display:inline-flex;padding:3px;border-radius:22px;background:var(--soft);position:relative}
+.seg button{height:34px;padding:0 16px;border-radius:17px;font-size:13px;font-weight:600;color:var(--mute);transition:background-color .35s var(--ease),color .35s,box-shadow .35s}
+.seg button[aria-pressed=true]{background:#fff;color:#111;box-shadow:0 1px 6px rgba(0,0,0,.12)}
+html.orn .seg{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .seg button{color:#D8D3CC}html.orn .seg button[aria-pressed=true]{color:#111}
+/* стиль «Орнамент»: узор на всю страницу, манекена нет (место под будущий блок) */
+html.orn .runway{display:none}
+html.orn .hero h1,html.orn .hero p{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+html.orn header,html.orn .hero,html.orn .install{--ink:#F4F1EC;--mute:#C9C4BD;--soft:rgba(255,255,255,.1);color:var(--ink)}
+html.orn .demo{background:rgba(0,0,0,.6);color:#B7B2AB;border-bottom-color:rgba(255,255,255,.1)}
+html.orn .install .get{background:#F4F1EC;color:#111}
+html.orn .badge{background:#F4F1EC;color:#111}
 html.orn .promos,html.orn .tabs,html.orn .feed,html.orn footer{--ink:#F4F1EC;--mute:#B7B2AB;--line:rgba(255,255,255,.14);--soft:rgba(255,255,255,.08);color:var(--ink)}
 html.orn .tab,html.orn .nm,html.orn .pr{text-shadow:0 1px 10px rgba(0,0,0,.8)}
 html.orn .promo{background:rgba(0,0,0,.55);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -368,6 +382,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 </header>
 
 <main class="wrap">
+  <div class="styles"><div class="seg" role="group" aria-label="Стиль сайта"><button class="press" data-style="white" aria-pressed="true">Светлый</button><button class="press" data-style="orn" aria-pressed="false">Орнамент</button></div></div>
   <section class="hero">
     <h1>Осень.<br>Зима.</h1>
     <p>Новая коллекция уже в магазинах.</p>
@@ -503,35 +518,42 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794318265"></script>
+<script src="products.js?v=1794918077"></script>
 <script>
 (function () {
-  /* ---------- орнамент снизу ---------- */
-  if (!/[?&]theme=white\b/.test(location.search)) {
-    document.documentElement.classList.add('orn');
-    var bgLayer = document.querySelector('.orn-bg'), tile = document.querySelector('.orn-tile'), ticking = false;
+  /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
+  (function () {
+    var root = document.documentElement, bgLayer = document.querySelector('.orn-bg'), tile = document.querySelector('.orn-tile'), ticking = false;
     var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var tc = document.querySelector('meta[name="theme-color"]');
     function paint() {
       ticking = false;
-      // линия перехода — сразу под подписью примерочной; пока манекен на экране, узор прячется ниже
-      var anchor = document.querySelector('.rw-bar') || document.querySelector('.hero');
-      var line = anchor ? anchor.getBoundingClientRect().bottom + 24 : window.innerHeight;
-      bgLayer.style.setProperty('--l', Math.round(line + 160) + 'px');
-      // когда узор занял экран, фон за панелями Safari тоже тёмный
-      var dark = line < 40;
-      if (dark !== document.documentElement.classList.contains('orn-dark')) {
-        document.documentElement.classList.toggle('orn-dark', dark);
-        var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.content = dark ? '#0b0b0d' : '#ffffff';
-      }
+      if (!root.classList.contains('orn')) return;
       var need = window.innerHeight + document.documentElement.scrollHeight * 0.35 + 400;
       if (Math.abs(tile.offsetHeight - need) > 200) tile.style.height = need + 'px';
       if (!still) tile.style.transform = 'translate3d(0,' + (-window.scrollY * 0.35) + 'px,0)';
     }
+    function setStyle(st, save) {
+      var orn = st === 'orn';
+      root.classList.toggle('orn', orn); root.classList.toggle('orn-dark', orn);
+      bgLayer.style.setProperty('--l', '-400px');   // узор сразу на всю страницу
+      if (tc) tc.content = orn ? '#0b0b0d' : '#ffffff';
+      [].forEach.call(document.querySelectorAll('[data-style]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.style === st)); });
+      try { if (save) localStorage.setItem('ar-style', st); } catch (e) {}
+      paint();
+      window.dispatchEvent(new Event('scroll'));   // видео манекена само встанет на паузу/продолжит
+    }
+    var q = (location.search.match(/[?&]style=(orn|white)\b/) || [])[1], saved = null;
+    try { saved = localStorage.getItem('ar-style'); } catch (e) {}
+    setStyle(q || saved || 'white', false);
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-style]');
+      if (b) { setStyle(b.dataset.style, true); window.scrollTo(0, 0); }
+    });
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
     window.addEventListener('load', paint); window.addEventListener('resize', paint);
-    setInterval(paint, 500);   // примерочная могла свернуться/развернуться — линия следует за ней
-    paint();
-  }
+    setInterval(paint, 1000);
+  })();
   /* ---------- без увеличения экрана (правило всех проектов) ---------- */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
     document.addEventListener(t, function (e) { e.preventDefault(); }, { passive: false });
@@ -1334,7 +1356,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
         if (i === rwShown && shouldPlay()) { v.preload = 'auto'; if (v.paused) v.play().catch(function () {}); } else if (!v.paused) v.pause();
       });
     }
-    function shouldPlay() { return rwOpen && visible && !reduce && !document.hidden; }
+    function shouldPlay() { return rwOpen && visible && !document.documentElement.classList.contains('orn') && !reduce && !document.hidden; }
     // iPhone ставит видео на паузу, когда приложение уходит в фон, и само не возобновляет — запускаем снова
     document.addEventListener('visibilitychange', function () { if (!document.hidden) playActive(); });
     window.addEventListener('pageshow', function () { playActive(); });
