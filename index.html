@@ -598,7 +598,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794933180"></script>
+<script src="products.js?v=1794952884"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -1467,8 +1467,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       spot = spot || st.querySelector('.sc-spot');
       spot.classList.toggle('on', wide);
       if (wide) {
-        var px = x + c.cx * s, py = y + c.cy * s, rx = Math.max(240, c.h * s * 0.42), ry = c.h * s * 0.58;
-        spot.style.background = 'radial-gradient(' + rx.toFixed(0) + 'px ' + ry.toFixed(0) + 'px at ' + px.toFixed(0) + 'px ' + py.toFixed(0) + 'px,rgba(0,0,0,0) 0,rgba(0,0,0,0) 45%,rgba(0,0,0,.42) 100%)';
+        var px = x + c.cx * s, py = y + c.cy * s, rx = Math.max(130, c.h * s * 0.2), ry = c.h * s * 0.62;
+        spot.style.background = 'radial-gradient(' + rx.toFixed(0) + 'px ' + ry.toFixed(0) + 'px at ' + px.toFixed(0) + 'px ' + py.toFixed(0) + 'px,rgba(0,0,0,0) 0,rgba(0,0,0,0) 50%,rgba(0,0,0,.45) 72%,rgba(0,0,0,.72) 100%)';
       }
       img.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
     }
@@ -1833,7 +1833,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
 <script>
 /* ---------- автообновление: иконка на экране «Домой» сама подхватывает новую версию ---------- */
 (function () {
-  var BUILD = /*build*/'1794933180', busy = false, last = 0;
+  var BUILD = /*build*/'1794952884', busy = false, last = 0;
   function check() {
     if (busy || Date.now() - last < 15000) return;   // не чаще раза в 15 секунд
     busy = true; last = Date.now();
