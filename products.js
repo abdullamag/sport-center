@@ -9,6 +9,20 @@ window.RUNWAY = [
   { id: 'brown', name: 'Поло и карго', video: 'video/mannequin-2.mp4?v=1794318265', poster: 'video/mannequin-2.jpg?v=1794318265', look: 'look-brown' }
 ];
 
+// Стиль «Орнамент»: общий кадр, камера наезжает на одного человека, свайп — к следующему.
+// cx, cy — центр человека на картинке (в пикселях исходника), h — высота кадра (меньше = ближе).
+window.SCENE = {
+  img: 'img/scene-1.jpg', w: 1672, h: 941,
+  people: [
+    { look: 'look-windbreaker', cx: 200, cy: 495, h: 800 },
+    { look: 'look-windbreaker-grey', cx: 465, cy: 590, h: 640 },
+    { look: 'look-suit', cx: 718, cy: 470, h: 800 },
+    { look: 'look-zipnavy', cx: 1045, cy: 440, h: 800 },
+    { look: 'look-zipgrey', cx: 1270, cy: 650, h: 620 },
+    { look: 'look-horse', cx: 1458, cy: 480, h: 800 }
+  ]
+};
+
 // Акции. store: 'ksp' | 'kz' | 'all'. Бесплатными становятся самые дешёвые вещи из подходящих.
 window.PROMOS = [
   {
@@ -96,11 +110,20 @@ window.LOOKS = [
   },
   {
     id: 'look-windbreaker',
-    name: 'Костюм-ветровка',
-    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg'],
+    name: 'Чёрная ветровка',
+    photos: ['img/windbreaker-black-1.jpg'],
     items: [
       { id: 'windbreaker-suit', color: 'Чёрный' },
       { id: 'sneakers-runner', color: 'Чёрный' }
+    ]
+  },
+  {
+    id: 'look-windbreaker-grey',
+    name: 'Графитовая ветровка',
+    photos: ['img/windbreaker-grey-1.jpg'],
+    items: [
+      { id: 'windbreaker-suit', color: 'Графитовый' },
+      { id: 'sneakers-runner', color: 'Серый' }
     ]
   }
 ];
@@ -266,6 +289,7 @@ window.PRODUCTS = [
   },
   {
     id: 'longsleeve-horse',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Лонгсливы',
     name: 'Лонгслив с вышитым конём',
     price: 2990,
@@ -276,6 +300,7 @@ window.PRODUCTS = [
   },
   {
     id: 'joggers-orange',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Брюки',
     name: 'Джоггеры с контрастным поясом',
     price: 3490,
@@ -286,6 +311,7 @@ window.PRODUCTS = [
   },
   {
     id: 'sneakers-ribbed',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Обувь',
     name: 'Кроссовки на рифлёной подошве',
     price: 5990,
@@ -296,6 +322,7 @@ window.PRODUCTS = [
   },
   {
     id: 'zip-knit',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Кардиганы',
     name: 'Кардиган на молнии с надписью',
     price: 3990,
@@ -309,6 +336,7 @@ window.PRODUCTS = [
   },
   {
     id: 'jeans-straight',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Брюки',
     name: 'Джинсы прямые',
     price: 3490,
@@ -322,6 +350,7 @@ window.PRODUCTS = [
   },
   {
     id: 'sneakers-ring',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Обувь',
     name: 'Кеды с белой эмблемой',
     price: 4990,
@@ -332,6 +361,7 @@ window.PRODUCTS = [
   },
   {
     id: 'sneakers-suede',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Обувь',
     name: 'Кеды кожа и замша',
     price: 4990,
@@ -342,6 +372,7 @@ window.PRODUCTS = [
   },
   {
     id: 'suit-hood',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Костюмы',
     name: 'Костюм с бордовым капюшоном',
     price: 6990,
@@ -352,6 +383,7 @@ window.PRODUCTS = [
   },
   {
     id: 'sneakers-knit',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Обувь',
     name: 'Кроссовки трикотажные',
     price: 5490,
@@ -362,6 +394,7 @@ window.PRODUCTS = [
   },
   {
     id: 'windbreaker-suit',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Костюмы',
     name: 'Костюм-ветровка',
     price: 5990,
@@ -375,6 +408,7 @@ window.PRODUCTS = [
   },
   {
     id: 'sneakers-runner',
+    hidden: true,   // только внутри образа, отдельной карточки нет
     cat: 'Обувь',
     name: 'Кроссовки на прозрачной подошве',
     price: 5990,

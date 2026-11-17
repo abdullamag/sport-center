@@ -333,6 +333,37 @@ html.orn body{background:transparent}
 html{background:#fff;transition:background-color .3s}
 html.orn.orn-dark{background:#0b0b0d}
 /* всё, что ниже примерочной, лежит на узоре — светлый текст */
+/* сцена (стиль «Орнамент»): камера по общему кадру */
+.scene{display:none}
+html.orn .scene{display:block;margin-top:24px}
+.sc-stage{position:relative;max-width:min(520px,calc(72dvh * 3 / 4));margin:0 auto;aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#1a1a1c;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;isolation:isolate;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.sc-stage:active{cursor:grabbing}
+.sc-stage img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;will-change:transform;opacity:0;transition:opacity .5s;pointer-events:none;-webkit-user-drag:none}
+.sc-stage img.ok{opacity:1}
+.sc-stage .cradle .bar,.sc-stage .cradle i::before{background:rgba(255,255,255,.4)}.sc-stage .cradle i::after{background:#fff}.sc-stage .cradle em{color:#aaa}
+.sc-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to top,rgba(0,0,0,.78),rgba(0,0,0,0));pointer-events:none;z-index:1}
+.sc-info{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 18px 18px;color:#fff;display:flex;align-items:flex-end;gap:12px}
+.sc-info .t{flex:1;min-width:0}
+.sc-info small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.sc-info b{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1.2}
+.sc-info span.pr{display:block;font-size:14px;color:rgba(255,255,255,.8);margin-top:2px}
+.sc-info .t>*{transition:opacity .25s,transform .35s var(--ease)}
+.sc-info.swap .t>*{opacity:0;transform:translateY(6px)}
+.sc-go{flex:none;height:44px;padding:0 16px;border-radius:22px;background:#fff;color:#111;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sc-dots{position:absolute;top:14px;left:0;right:0;z-index:2;display:flex;justify-content:center;gap:6px;pointer-events:none}
+.sc-dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45);transition:width .35s var(--ease),background-color .35s}
+.sc-dots i.on{width:18px;background:#fff}
+.sc-arr{position:absolute;top:50%;z-index:2;width:44px;height:44px;margin-top:-22px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.sc-arr.l{left:10px}.sc-arr.r{right:10px}
+.sc-arr[disabled]{opacity:0;pointer-events:none}
+.sc-hint{position:absolute;left:50%;top:44%;z-index:3;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;pointer-events:none;transition:opacity .4s}
+.sc-hint.off{opacity:0}
+.sc-hint .hand{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;animation:scSwipe 1.8s var(--ease) infinite}
+.sc-hint em{font-style:normal;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@keyframes scSwipe{0%{transform:translateX(34px);opacity:0}15%{opacity:1}70%{transform:translateX(-34px);opacity:1}100%{transform:translateX(-34px);opacity:0}}
+.sc-under{text-align:center;font-size:13px;color:var(--mute);margin:12px 0 0}
+html.orn .sc-under{color:#C9C4BD;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+@media(prefers-reduced-motion:reduce){.sc-hint .hand{animation:none}}
 /* переключатель стиля */
 .styles{display:flex;justify-content:center;padding:10px 0 0}
 .seg{display:inline-flex;padding:3px;border-radius:22px;background:var(--soft);position:relative}
@@ -388,6 +419,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     <p>Новая коллекция уже в магазинах.</p>
   </section>
   <section class="runway" id="runway" aria-label="Примерочная"></section>
+  <section class="scene" id="scene" aria-label="Образы на фото"></section>
   <div class="promos" id="promos"></div>
   <div class="tabs" id="tabs" role="group" aria-label="Категории"></div>
   <div class="feed" id="feed"></div>
@@ -518,7 +550,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794918077"></script>
+<script src="products.js?v=1794918278"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -685,7 +717,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   function renderTabs() {
     var cats = ['all'];
     if (L.length) cats.push(LOOKS_TAB);
-    P.forEach(function (p) { if (cats.indexOf(p.cat) < 0) cats.push(p.cat); });
+    P.forEach(function (p) { if (!p.hidden && cats.indexOf(p.cat) < 0) cats.push(p.cat); });
     $('#tabs').innerHTML = cats.map(function (c) {
       return '<button class="tab" data-cat="' + c + '" aria-pressed="' + (c === cat) + '">' + (c === 'all' ? 'Всё' : c) + '</button>';
     }).join('');
@@ -694,7 +726,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     var looks = (cat === 'all' || cat === LOOKS_TAB) ? L.map(function (l) {
       return { id: l.id, href: '#l-' + l.id, img: l.photos[0], n: l.photos.length, name: l.name, price: lookTotal(l), tag: 'Образ · ' + l.items.length + ' вещи' };
     }) : [];
-    var prods = cat === LOOKS_TAB ? [] : P.filter(function (p) { return cat === 'all' || p.cat === cat; }).map(function (p) {
+    var prods = cat === LOOKS_TAB ? [] : P.filter(function (p) { return !p.hidden && (cat === 'all' || p.cat === cat); }).map(function (p) {
       var pr = promoFor(p);
       return { id: p.id, href: '#p-' + p.id, img: p.photos[0], n: p.photos.length, name: p.name, price: p.price, tag: pr && pr.badge, hot: !!pr };
     });
@@ -1321,6 +1353,119 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     if (was && !opening) keepFeedY();
   }
   window.addEventListener('hashchange', route);
+
+  /* ---------- сцена: камера наезжает на человека, свайп — к следующему ---------- */
+  var SC = window.SCENE;
+  if (SC && SC.people && SC.people.length) (function () {
+    var ppl = SC.people.filter(function (x) { return lookById(x.look); }), n = ppl.length;
+    if (!n) return;
+    var host = $('#scene'), i = 0, pos = 0, anim = 0, seen = mem.get('ar-sc-seen', false);
+    var chev = function (d) { return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; };
+    host.innerHTML = '<div class="sc-stage" tabindex="0" aria-roledescription="карусель" aria-label="Образы на фото: листайте влево">' +
+      '<span class="cradle" aria-hidden="true"><span class="bar"></span><i></i><i></i><i></i><i></i><i></i><em>загрузка</em></span>' +
+      '<img src="' + SC.img + '" width="' + SC.w + '" height="' + SC.h + '" alt="Шесть образов на фоне гор" draggable="false">' +
+      '<div class="sc-dots">' + ppl.map(function () { return '<i></i>'; }).join('') + '</div>' +
+      '<button class="sc-arr l press" aria-label="Предыдущий образ">' + chev('M15 5l-7 7 7 7') + '</button>' +
+      '<button class="sc-arr r press" aria-label="Следующий образ">' + chev('M9 5l7 7-7 7') + '</button>' +
+      '<div class="sc-hint' + (seen ? ' off' : '') + '" aria-hidden="true"><span class="hand"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.5 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/></svg></span><em>Листайте влево</em></div>' +
+      '<div class="sc-info"><span class="t"><small></small><b></b><span class="pr"></span></span><a class="sc-go press">Образ ' + chev('M9 5l7 7-7 7') + '</a></div>' +
+      '</div><p class="sc-under">← Свайп — следующий образ</p>';
+    var st = host.querySelector('.sc-stage'), img = st.querySelector('img'), info = st.querySelector('.sc-info');
+    var dots = st.querySelectorAll('.sc-dots i'), aL = st.querySelector('.sc-arr.l'), aR = st.querySelector('.sc-arr.r'), hintEl = st.querySelector('.sc-hint');
+    markCached(st);
+    // камера между людьми: pos — дробный номер человека, параметры плавно смешиваются
+    function cam(p) {
+      var a = Math.max(0, Math.min(n - 1, Math.floor(p))), b = Math.min(n - 1, a + 1), t = Math.max(0, Math.min(1, p - a));
+      if (p < 0) { a = b = 0; t = 0; } if (p > n - 1) { a = b = n - 1; t = 0; }
+      var A = ppl[a], B = ppl[b], e = t;
+      var cx = A.cx + (B.cx - A.cx) * e, cy = A.cy + (B.cy - A.cy) * e;
+      // в середине пути камера чуть отъезжает — как при панораме
+      var h = A.h + (B.h - A.h) * e + Math.sin(Math.PI * e) * 120;
+      return { cx: cx, cy: cy, h: Math.min(h, SC.h) };
+    }
+    function draw() {
+      var W = st.clientWidth, H = st.clientHeight; if (!W) return;
+      var p = pos, over = 0;
+      if (p < 0) { over = p; p = 0; } else if (p > n - 1) { over = p - (n - 1); p = n - 1; }
+      var c = cam(p), s = H / c.h;
+      var x = W / 2 - c.cx * s, y = H / 2 - c.cy * s;
+      x = Math.min(0, Math.max(W - SC.w * s, x)); y = Math.min(0, Math.max(H - SC.h * s, y));
+      x -= over * W * 0.25;   // резинка на краях
+      img.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
+    }
+    function label(k) {
+      var l = lookById(ppl[k].look);
+      info.classList.add('swap');
+      setTimeout(function () {
+        info.querySelector('small').textContent = 'Образ ' + (k + 1) + ' из ' + n;
+        info.querySelector('b').textContent = l.name;
+        info.querySelector('.pr').textContent = l.items.length + ' вещи · ' + rub(lookTotal(l));
+        info.querySelector('.sc-go').href = '#l-' + l.id;
+        info.classList.remove('swap');
+      }, label.first ? 180 : 0);
+      label.first = true;
+      dots.forEach(function (d, j) { d.classList.toggle('on', j === k); });
+      aL.disabled = k === 0; aR.disabled = k === n - 1;
+    }
+    var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+    function go(k, dur) {
+      k = Math.max(0, Math.min(n - 1, k));
+      var from = pos, t0 = performance.now(), d = dur || 850;
+      if (k === Math.round(k) && k !== i) { i = k; label(k); }   // дробное k — только «подглядывание»
+      cancelAnimationFrame(anim);
+      (function step(now) {
+        var t = Math.min(1, (now - t0) / d);
+        pos = from + (k - from) * ease(t); draw();
+        if (t < 1) anim = requestAnimationFrame(step);
+      })(t0);
+    }
+    function done() { if (!seen) { seen = true; mem.set('ar-sc-seen', true); hintEl.classList.add('off'); } }
+    aL.addEventListener('click', function () { done(); go(i - 1); });
+    aR.addEventListener('click', function () { done(); go(i + 1); });
+    st.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { done(); go(i + 1); } if (e.key === 'ArrowLeft') { done(); go(i - 1); }
+    });
+    // жест: палец тянет камеру, отпустил — доезжает до ближайшего человека
+    var sx = 0, sy = 0, start = 0, drag = 0, lastX = 0, lastT = 0, v = 0;
+    function down(x, y) { cancelAnimationFrame(anim); sx = lastX = x; sy = y; start = pos; drag = 0; v = 0; lastT = performance.now(); }
+    function move(x, y, e) {
+      var dx = x - sx, dy = y - sy;
+      if (!drag) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; drag = Math.abs(dx) > Math.abs(dy) * 0.7 ? 1 : -1; if (drag > 0) done(); }
+      if (drag < 0) return;
+      if (e.cancelable) e.preventDefault();
+      var now = performance.now(); v = (x - lastX) / Math.max(1, now - lastT); lastX = x; lastT = now;
+      pos = start - dx / (st.clientWidth * 0.9); draw();
+    }
+    function up() {
+      if (drag !== 1) { drag = 0; return; }
+      drag = 0;
+      var k = Math.round(pos);
+      if (Math.abs(v) > 0.35) k = v < 0 ? Math.ceil(pos - 0.01) : Math.floor(pos + 0.01);
+      if (k === i && Math.abs(pos - start) > 0.18) k = pos > start ? i + 1 : i - 1;
+      go(k, 650);
+    }
+    st.addEventListener('touchstart', function (e) { if (e.touches.length === 1 && !e.target.closest('a,button')) down(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    st.addEventListener('touchmove', function (e) { if (e.touches.length === 1) move(e.touches[0].clientX, e.touches[0].clientY, e); }, { passive: false });
+    st.addEventListener('touchend', up); st.addEventListener('touchcancel', up);
+    var mouse = false;
+    st.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' || e.target.closest('a,button')) return; mouse = true; down(e.clientX, e.clientY); });
+    window.addEventListener('pointermove', function (e) { if (mouse) move(e.clientX, e.clientY, e); });
+    window.addEventListener('pointerup', function () { if (mouse) { mouse = false; up(); } });
+    window.addEventListener('resize', draw);
+    img.addEventListener('load', draw);
+    label(0); draw();
+    // первый раз камера сама «подглядывает» к соседу — видно, что дальше есть ещё люди
+    if (!seen && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      var peeked = false, io = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
+        if (peeked || !es[0].isIntersecting || !document.documentElement.classList.contains('orn')) return;
+        peeked = true;
+        setTimeout(function () { if (i === 0 && !drag && !seen) { go(0.28, 700); setTimeout(function () { if (!drag && i === 0) go(0, 700); }, 800); } }, 900);
+      }, { threshold: 0.6 });
+      if (io) io.observe(st);
+    }
+    // при переключении стиля сцена появляется — пересчитать размеры
+    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  })();
 
   /* ---------- примерочная: шторка, за которой меняется манекен ---------- */
   var RW = window.RUNWAY || [];
