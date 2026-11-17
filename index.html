@@ -598,7 +598,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794919234"></script>
+<script src="products.js?v=1794932859"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -1533,6 +1533,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     function relayout() { measure(); draw(); }
     window.addEventListener('resize', relayout);
     img.addEventListener('load', relayout);
+    // сначала лёгкая картинка, потом в фоне — чёткая в 2 раза крупнее (размер в разметке тот же, координаты не меняются)
+    if (SC.hd) img.addEventListener('load', function hd() {
+      img.removeEventListener('load', hd);
+      var pre = new Image(); pre.onload = function () { (pre.decode ? pre.decode() : Promise.resolve()).catch(function () {}).then(function () { img.src = SC.hd; }); }; pre.src = SC.hd;
+    });
     label(0); setTimeout(relayout, 0); relayout();
     // первый раз камера сама «подглядывает» к соседу — видно, что дальше есть ещё люди
     if (!seen && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
