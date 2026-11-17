@@ -195,6 +195,18 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 .gv-phone.nudge{animation:gvNudge 1.1s var(--ease)}
 html.orn .gv{background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 @media(prefers-reduced-motion:reduce){.gv-pull i,.gv-phone.nudge{animation:none}}
+@media(min-width:720px){
+  .gv{min-height:236px}
+  .gv::before{right:0;top:-120px;width:520px;height:520px}
+  .gv-face{right:240px;padding:24px 0 24px 32px}
+  .gv-face.info{min-height:236px;margin-right:240px}
+  .gv b.h{font-size:26px;margin-top:6px}
+  .gv ul{margin-top:12px;gap:6px}.gv li{font-size:15px;padding-left:16px}.gv li::before{top:8px}
+  .gv-days b{font-size:72px}.gv-days span{font-size:20px}
+  .gv-clock i{min-width:56px;font-size:18px;padding:7px 0}
+  .gv-phone{right:72px;width:104px;height:210px;margin-top:-105px}
+  .gv-pull{right:18px;bottom:16px;font-size:12px}
+}
 /* promo */
 .promos{display:grid;gap:8px;margin-top:28px}
 .promo{display:flex;align-items:center;gap:16px;width:100%;min-height:76px;padding:14px 12px 14px 20px;border-radius:var(--r);background:var(--ink);color:#fff;text-align:left;animation:rise .8s .12s var(--ease) both;position:relative;overflow:hidden}
@@ -329,9 +341,9 @@ html.orn .gv{background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.14);ba
 /* примерочная на большом экране: слева папка с образами, справа крупный манекен */
 .rw-side{display:none}
 @media(min-width:860px){
-  .runway{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(560px,calc(80dvh * 2 / 3)));grid-template-areas:"side stage" "side bar";column-gap:48px;align-items:start;margin-top:40px}
-  .rw-side{display:block;grid-area:side;align-self:center}
-  .rw-fold{grid-area:stage}.rw-bar{grid-area:bar}
+  .runway{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(560px,calc(80dvh * 2 / 3)));grid-template-areas:"side main";column-gap:48px;align-items:start;margin-top:40px}
+  .rw-side{display:block;grid-area:side;align-self:start}
+  .rw-main{grid-area:main;position:sticky;top:16px;align-self:start}
   .rw-stage,.rw-bar{max-width:none}
   .rw-bar{margin:14px 0 0}
   .runway.closed .rw-bar{margin-top:0}
@@ -356,7 +368,7 @@ html.orn .orn-bg{display:block;position:fixed;left:0;right:0;top:-160px;height:c
   -webkit-mask-image:linear-gradient(to bottom,transparent var(--l,100vh),#000 calc(var(--l,100vh) + 220px));
           mask-image:linear-gradient(to bottom,transparent var(--l,100vh),#000 calc(var(--l,100vh) + 220px))}
 html.orn .orn-tile{position:absolute;left:0;right:0;top:0;height:300%;background:#0b0b0d url(img/ornament-tile.jpg) left top/100% auto repeat-y;will-change:transform}
-@media(min-width:720px){html.orn .orn-tile{background-size:900px auto}}
+@media(min-width:720px){html.orn .orn-tile{background-size:900px auto;background-repeat:repeat}}
 html.orn .orn-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,8,10,.5),rgba(8,8,10,.2) 55%,rgba(8,8,10,.05))}
 html.orn body{background:transparent}
 html{background:#fff;transition:background-color .3s}
@@ -383,6 +395,8 @@ html.orn .seg button{color:rgba(255,255,255,.85)}html.orn .seg button[aria-press
 .sc-stage img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;will-change:transform;opacity:0;transition:opacity .5s;pointer-events:none;-webkit-user-drag:none}
 .sc-stage img.ok{opacity:1}
 .sc-stage .cradle .bar,.sc-stage .cradle i::before{background:rgba(255,255,255,.4)}.sc-stage .cradle i::after{background:#fff}.sc-stage .cradle em{color:#aaa}
+.sc-spot{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .5s}
+.sc-spot.on{opacity:1}
 .sc-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(38svh + var(--fade));background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.6) var(--fade),rgba(0,0,0,0));pointer-events:none;z-index:1}
 .sc-info{position:absolute;left:0;right:0;bottom:var(--fade);z-index:2;padding:0 max(20px,calc((100% - 1160px)/2)) 22px;color:#fff;display:flex;align-items:flex-end;gap:12px}
 .sc-info .t{flex:1;min-width:0}
@@ -1402,7 +1416,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     host.innerHTML = '<div class="sc-stage" tabindex="0" aria-roledescription="карусель" aria-label="Образы на фото: листайте влево">' +
       '<span class="cradle" aria-hidden="true"><span class="bar"></span><i></i><i></i><i></i><i></i><i></i><em>загрузка</em></span>' +
       '<img src="' + SC.img + '" width="' + SC.w + '" height="' + SC.h + '" alt="Шесть образов на фоне гор" draggable="false">' +
-      '<div class="sc-dots">' + ppl.map(function () { return '<i></i>'; }).join('') + '</div>' +
+      '<div class="sc-spot"></div><div class="sc-dots">' + ppl.map(function () { return '<i></i>'; }).join('') + '</div>' +
       '<button class="sc-arr l press" aria-label="Предыдущий образ">' + chev('M15 5l-7 7 7 7') + '</button>' +
       '<button class="sc-arr r press" aria-label="Следующий образ">' + chev('M9 5l7 7-7 7') + '</button>' +
       '<div class="sc-hint' + (seen ? ' off' : '') + '" aria-hidden="true"><span class="hand"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.5 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/></svg></span><em>Листайте влево</em></div>' +
@@ -1412,11 +1426,15 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     var dots = st.querySelectorAll('.sc-dots i'), aL = st.querySelector('.sc-arr.l'), aR = st.querySelector('.sc-arr.r'), hintEl = st.querySelector('.sc-hint');
     markCached(st);
     // где на экране свободно (между заголовком и подписью) — туда камера ставит человека целиком
-    var band = { t: 0.35, b: 0.8 }, hero = document.querySelector('.hero'), space = document.querySelector('.sc-space');
+    var wide = false, aimX = 0.5, spot = null, band = { t: 0.35, b: 0.8 }, hero = document.querySelector('.hero'), space = document.querySelector('.sc-space');
     function measure() {
       var V = st.clientHeight - fadePx(); if (!V) return;
       var top0 = host.getBoundingClientRect().top;
-      band.t = Math.min(0.5, (hero.getBoundingClientRect().bottom - top0 + 12) / V);
+      wide = st.clientWidth >= 900;
+      // на широком экране заголовок слева, человек — справа от него, поэтому ниже шапки, а не ниже заголовка
+      var above = wide ? document.querySelector('.styles') : hero;
+      band.t = Math.min(0.5, (above.getBoundingClientRect().bottom - top0 + 24) / V);
+      aimX = wide ? Math.min(0.66, Math.max(0.55, (hero.querySelector('h1').getBoundingClientRect().right + 40) / st.clientWidth + 0.12)) : 0.5;
       band.b = Math.max(band.t + 0.3, (info.getBoundingClientRect().top - top0 - 34) / V);
       // контент страницы начинается там, где картинка уже растворяется в ковре
       var want = host.offsetTop + V + 24 - space.offsetTop;
@@ -1442,9 +1460,16 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       var c = cam(p, W, V), s = V / c.h;
       if (SC.h * s < V) s = V / SC.h;            // видимая часть экрана всегда закрыта картинкой
       if (SC.w * s < W) s = W / SC.w;
-      var x = W / 2 - c.cx * s, y = V / 2 - c.cy * s;
+      var x = W * aimX - c.cx * s, y = V / 2 - c.cy * s;
       x = Math.min(0, Math.max(W - SC.w * s, x)); y = Math.min(0, Math.max(V - SC.h * s, y));
       x -= over * W * 0.25;
+      // прожектор: остальные приглушены, выбранный в свете
+      spot = spot || st.querySelector('.sc-spot');
+      spot.classList.toggle('on', wide);
+      if (wide) {
+        var px = x + c.cx * s, py = y + c.cy * s, rx = Math.max(240, c.h * s * 0.42), ry = c.h * s * 0.58;
+        spot.style.background = 'radial-gradient(' + rx.toFixed(0) + 'px ' + ry.toFixed(0) + 'px at ' + px.toFixed(0) + 'px ' + py.toFixed(0) + 'px,rgba(0,0,0,0) 0,rgba(0,0,0,0) 45%,rgba(0,0,0,.42) 100%)';
+      }
       img.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
     }
     function label(k) {
@@ -1550,6 +1575,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       '</div></div>' +
       '<div class="rw-bar"><span class="t"><small>Примерочная</small><b id="rwName"></b></span><a class="btn press" id="rwBuy">Посмотреть образ</a>' +
       '<button class="rw-tog press" id="rwTog" aria-expanded="true" aria-controls="rwFold" aria-label="Скрыть примерочную"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>';
+    (function () {   // манекен и подпись — одна колонка, на большом экране она прилипает к верху
+      var m = document.createElement('div'); m.className = 'rw-main'; var f = $('#rwFold');
+      f.parentNode.insertBefore(m, f); m.appendChild(f); m.appendChild($('.rw-bar'));
+    })();
     var stage = $('.rw-stage'), rwCurtain = $('.rw-curtain'), vids = document.querySelectorAll('.rw-v'), dots = document.querySelectorAll('.rw-dots i');
     var rwShown = 0;                                   // какой манекен сейчас виден за шторкой
     function playActive() {
