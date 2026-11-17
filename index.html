@@ -322,14 +322,16 @@ dialog.closing::backdrop{animation:fadeout .28s both}
 }
 /* ---------- орнамент: страница белая, узор подтягивается снизу после манекена ---------- */
 .orn-bg{display:none}
-html.orn .orn-bg{display:block;position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+/* слой выходит за края экрана: в Safari при скрытой панели снизу и под строкой состояния не остаётся белых полос */
+html.orn .orn-bg{display:block;position:fixed;left:0;right:0;top:-160px;height:calc(100lvh + 320px);z-index:-1;overflow:hidden;pointer-events:none;
   -webkit-mask-image:linear-gradient(to bottom,transparent var(--l,100vh),#000 calc(var(--l,100vh) + 220px));
           mask-image:linear-gradient(to bottom,transparent var(--l,100vh),#000 calc(var(--l,100vh) + 220px))}
 html.orn .orn-tile{position:absolute;left:0;right:0;top:0;height:300%;background:#0b0b0d url(img/ornament-tile.jpg) left top/100% auto repeat-y;will-change:transform}
 @media(min-width:720px){html.orn .orn-tile{background-size:900px auto}}
 html.orn .orn-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,8,10,.5),rgba(8,8,10,.2) 55%,rgba(8,8,10,.05))}
 html.orn body{background:transparent}
-html{background:#fff}
+html{background:#fff;transition:background-color .3s}
+html.orn.orn-dark{background:#0b0b0d}
 /* всё, что ниже примерочной, лежит на узоре — светлый текст */
 html.orn .promos,html.orn .tabs,html.orn .feed,html.orn footer{--ink:#F4F1EC;--mute:#B7B2AB;--line:rgba(255,255,255,.14);--soft:rgba(255,255,255,.08);color:var(--ink)}
 html.orn .tab,html.orn .nm,html.orn .pr{text-shadow:0 1px 10px rgba(0,0,0,.8)}
@@ -514,7 +516,13 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       // линия перехода — сразу под подписью примерочной; пока манекен на экране, узор прячется ниже
       var anchor = document.querySelector('.rw-bar') || document.querySelector('.hero');
       var line = anchor ? anchor.getBoundingClientRect().bottom + 24 : window.innerHeight;
-      bgLayer.style.setProperty('--l', Math.round(line) + 'px');
+      bgLayer.style.setProperty('--l', Math.round(line + 160) + 'px');
+      // когда узор занял экран, фон за панелями Safari тоже тёмный
+      var dark = line < 40;
+      if (dark !== document.documentElement.classList.contains('orn-dark')) {
+        document.documentElement.classList.toggle('orn-dark', dark);
+        var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.content = dark ? '#0b0b0d' : '#ffffff';
+      }
       var need = window.innerHeight + document.documentElement.scrollHeight * 0.35 + 400;
       if (Math.abs(tile.offsetHeight - need) > 200) tile.style.height = need + 'px';
       if (!still) tile.style.transform = 'translate3d(0,' + (-window.scrollY * 0.35) + 'px,0)';
