@@ -12,7 +12,7 @@ window.RUNWAY = [
 // Стиль «Орнамент»: общий кадр, камера наезжает на одного человека, свайп — к следующему.
 // cx — центр человека по горизонтали, top/bot — макушка и подошвы (пиксели исходника).
 window.SCENE = {
-  img: 'img/scene-2.jpg?v=3', hd: 'img/scene-3.jpg', w: 1672, h: 1561,
+  img: 'img/scene-4.jpg', hd: 'img/scene-5.jpg', w: 1672, h: 1561,
   people: [
     { look: 'look-windbreaker', cx: 446, top: 758, bot: 1198 },
     { look: 'look-windbreaker-grey', cx: 610, top: 892, bot: 1212 },
