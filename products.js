@@ -10,16 +10,16 @@ window.RUNWAY = [
 ];
 
 // Стиль «Орнамент»: общий кадр, камера наезжает на одного человека, свайп — к следующему.
-// cx, cy — центр человека на картинке (в пикселях исходника), h — высота кадра (меньше = ближе).
+// cx — центр человека по горизонтали, top/bot — макушка и подошвы (пиксели исходника).
 window.SCENE = {
-  img: 'img/scene-2.jpg', w: 1672, h: 941,
+  img: 'img/scene-2.jpg?v=3', w: 1672, h: 1561,
   people: [
-    { look: 'look-windbreaker', cx: 446, cy: 626, h: 680 },
-    { look: 'look-windbreaker-grey', cx: 610, cy: 700, h: 560 },
-    { look: 'look-suit', cx: 756, cy: 626, h: 680 },
-    { look: 'look-zipnavy', cx: 955, cy: 582, h: 600 },
-    { look: 'look-zipgrey', cx: 1078, cy: 730, h: 540 },
-    { look: 'look-horse', cx: 1214, cy: 637, h: 640 }
+    { look: 'look-windbreaker', cx: 446, top: 758, bot: 1198 },
+    { look: 'look-windbreaker-grey', cx: 610, top: 892, bot: 1212 },
+    { look: 'look-suit', cx: 756, top: 760, bot: 1165 },
+    { look: 'look-zipnavy', cx: 955, top: 746, bot: 1112 },
+    { look: 'look-zipgrey', cx: 1078, top: 936, bot: 1235 },
+    { look: 'look-horse', cx: 1214, top: 786, bot: 1168 }
   ]
 };
 
@@ -111,7 +111,7 @@ window.LOOKS = [
   {
     id: 'look-windbreaker',
     name: 'Чёрная ветровка',
-    photos: ['img/windbreaker-black-1.jpg'],
+    photos: ['img/windbreaker-black-1.jpg?v=2'],
     items: [
       { id: 'windbreaker-suit', color: 'Чёрный' },
       { id: 'sneakers-runner', color: 'Чёрный' }
@@ -120,7 +120,7 @@ window.LOOKS = [
   {
     id: 'look-windbreaker-grey',
     name: 'Графитовая ветровка',
-    photos: ['img/windbreaker-grey-1.jpg'],
+    photos: ['img/windbreaker-grey-1.jpg?v=2'],
     items: [
       { id: 'windbreaker-suit', color: 'Графитовый' },
       { id: 'sneakers-runner', color: 'Серый' }
@@ -404,7 +404,7 @@ window.PRODUCTS = [
       { name: 'Чёрный', hex: '#111214', photo: 0 },
       { name: 'Графитовый', hex: '#5A5F6B', photo: 1 }
     ],
-    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg']
+    photos: ['img/windbreaker-black-1.jpg?v=2', 'img/windbreaker-grey-1.jpg?v=2']
   },
   {
     id: 'sneakers-runner',
@@ -418,6 +418,6 @@ window.PRODUCTS = [
       { name: 'Чёрный', hex: '#15161A', photo: 0 },
       { name: 'Серый', hex: '#8E9097', photo: 1 }
     ],
-    photos: ['img/windbreaker-black-1.jpg', 'img/windbreaker-grey-1.jpg']
+    photos: ['img/windbreaker-black-1.jpg?v=2', 'img/windbreaker-grey-1.jpg?v=2']
   }
 ];

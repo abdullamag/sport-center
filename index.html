@@ -335,14 +335,27 @@ html.orn.orn-dark{background:#0b0b0d}
 /* всё, что ниже примерочной, лежит на узоре — светлый текст */
 /* сцена (стиль «Орнамент»): камера по общему кадру */
 .scene{display:none}
-html.orn .scene{display:block;margin-top:24px}
-.sc-stage{position:relative;max-width:min(520px,calc(72dvh * 3 / 4));margin:0 auto;aspect-ratio:3/4;border-radius:22px;overflow:hidden;background:#1a1a1c;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;isolation:isolate;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+html.orn body{position:relative}
+html.orn .scene{display:block;position:absolute;left:0;right:0;top:0;height:calc(100svh + var(--fade));z-index:0;--fade:240px}
+html.orn .sc-space{height:var(--sp,60vh)}
+html.orn .demo,html.orn .install,html.orn header,html.orn .styles,html.orn .hero{position:relative;z-index:2}
+html.orn .demo{background:rgba(0,0,0,.25);color:rgba(255,255,255,.75);border-bottom-color:rgba(255,255,255,.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+html.orn .install{background:rgba(0,0,0,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .install,html.orn header,html.orn .hero{--ink:#fff;--mute:rgba(255,255,255,.82);--soft:rgba(255,255,255,.16);color:#fff}
+html.orn .install .get{background:#fff;color:#111}
+html.orn .badge{background:#fff;color:#111}
+html.orn .hero,html.orn .styles{pointer-events:none}html.orn .styles button{pointer-events:auto}
+html.orn .hero h1,html.orn .hero p{text-shadow:0 2px 20px rgba(0,0,0,.35)}
+html.orn .seg{background:rgba(0,0,0,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html.orn .seg button{color:rgba(255,255,255,.85)}html.orn .seg button[aria-pressed=true]{color:#111}
+.sc-stage{position:absolute;inset:0;overflow:hidden;background:linear-gradient(#5c7096,#4a4434 60%,#2c2820);touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;isolation:isolate;outline:none;
+  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - var(--fade)),transparent)}
 .sc-stage:active{cursor:grabbing}
 .sc-stage img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;will-change:transform;opacity:0;transition:opacity .5s;pointer-events:none;-webkit-user-drag:none}
 .sc-stage img.ok{opacity:1}
 .sc-stage .cradle .bar,.sc-stage .cradle i::before{background:rgba(255,255,255,.4)}.sc-stage .cradle i::after{background:#fff}.sc-stage .cradle em{color:#aaa}
-.sc-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to top,rgba(0,0,0,.78),rgba(0,0,0,0));pointer-events:none;z-index:1}
-.sc-info{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 18px 18px;color:#fff;display:flex;align-items:flex-end;gap:12px}
+.sc-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(38svh + var(--fade));background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.6) var(--fade),rgba(0,0,0,0));pointer-events:none;z-index:1}
+.sc-info{position:absolute;left:0;right:0;bottom:var(--fade);z-index:2;padding:0 max(20px,calc((100% - 1160px)/2)) 22px;color:#fff;display:flex;align-items:flex-end;gap:12px}
 .sc-info .t{flex:1;min-width:0}
 .sc-info small{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
 .sc-info b{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1.2}
@@ -350,18 +363,17 @@ html.orn .scene{display:block;margin-top:24px}
 .sc-info .t>*{transition:opacity .25s,transform .35s var(--ease)}
 .sc-info.swap .t>*{opacity:0;transform:translateY(6px)}
 .sc-go{flex:none;height:44px;padding:0 16px;border-radius:22px;background:#fff;color:#111;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.sc-dots{position:absolute;top:14px;left:0;right:0;z-index:2;display:flex;justify-content:center;gap:6px;pointer-events:none}
+.sc-dots{position:absolute;bottom:calc(var(--fade) + 104px);left:0;right:0;z-index:2;display:flex;justify-content:center;gap:6px;pointer-events:none}
 .sc-dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45);transition:width .35s var(--ease),background-color .35s}
 .sc-dots i.on{width:18px;background:#fff}
-.sc-arr{position:absolute;top:50%;z-index:2;width:44px;height:44px;margin-top:-22px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
-.sc-arr.l{left:10px}.sc-arr.r{right:10px}
+.sc-arr{position:absolute;top:calc((100% - var(--fade)) * .55);z-index:2;width:44px;height:44px;margin-top:-22px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.sc-arr.l{left:max(10px,calc((100% - 1200px)/2))}.sc-arr.r{right:max(10px,calc((100% - 1200px)/2))}
 .sc-arr[disabled]{opacity:0;pointer-events:none}
-.sc-hint{position:absolute;left:50%;top:44%;z-index:3;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;pointer-events:none;transition:opacity .4s}
+.sc-hint{position:absolute;left:50%;top:calc((100% - var(--fade)) * .62);z-index:3;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;pointer-events:none;transition:opacity .4s}
 .sc-hint.off{opacity:0}
 .sc-hint .hand{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;animation:scSwipe 1.8s var(--ease) infinite}
 .sc-hint em{font-style:normal;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes scSwipe{0%{transform:translateX(34px);opacity:0}15%{opacity:1}70%{transform:translateX(-34px);opacity:1}100%{transform:translateX(-34px);opacity:0}}
-.sc-under{text-align:center;font-size:13px;color:var(--mute);margin:12px 0 0}
 @media(prefers-reduced-motion:reduce){.sc-hint .hand{animation:none}}
 /* переключатель стиля */
 .styles{display:flex;justify-content:center;padding:10px 0 0}
@@ -412,6 +424,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   </section>
   <section class="runway" id="runway" aria-label="Примерочная"></section>
   <section class="scene" id="scene" aria-label="Образы на фото"></section>
+  <div class="sc-space" aria-hidden="true"></div>
   <div class="promos" id="promos"></div>
   <div class="tabs" id="tabs" role="group" aria-label="Категории"></div>
   <div class="feed" id="feed"></div>
@@ -542,7 +555,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
   <button class="btn press" data-close>Понятно</button>
 </dialog>
 
-<script src="products.js?v=1794918493"></script>
+<script src="products.js?v=1794918790"></script>
 <script>
 (function () {
   /* ---------- стиль сайта: «Светлый» (манекен) / «Орнамент» (узор на всю страницу) ---------- */
@@ -554,19 +567,18 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       ticking = false;
       if (!root.classList.contains('orn')) return;
       // линия перехода — сразу под сценой: пока парни на экране, страница белая, дальше снизу поднимается узор
-      var anchor = document.querySelector('.sc-under') || document.querySelector('.hero');
-      var line = anchor ? anchor.getBoundingClientRect().bottom + 24 : window.innerHeight;
-      bgLayer.style.setProperty('--l', Math.round(line + 160) + 'px');
-      var dark = line < 40;
-      if (dark !== root.classList.contains('orn-dark')) { root.classList.toggle('orn-dark', dark); if (tc) tc.content = dark ? '#0b0b0d' : '#ffffff'; }
+      var sc = document.querySelector('#scene'), r = sc.getBoundingClientRect();
+      var fade = parseFloat(getComputedStyle(sc).getPropertyValue('--fade')) || 240;
+      // узор полностью проявлен ещё до того, как картинка начинает растворяться — белого между ними нет
+      bgLayer.style.setProperty('--l', Math.round(r.bottom - fade - 220 + 160) + 'px');
       var need = window.innerHeight + document.documentElement.scrollHeight * 0.35 + 400;
       if (Math.abs(tile.offsetHeight - need) > 200) tile.style.height = need + 'px';
       if (!still) tile.style.transform = 'translate3d(0,' + (-window.scrollY * 0.35) + 'px,0)';
     }
     function setStyle(st, save) {
       var orn = st === 'orn';
-      root.classList.toggle('orn', orn); root.classList.remove('orn-dark');
-      if (tc) tc.content = '#ffffff';
+      root.classList.toggle('orn', orn); root.classList.toggle('orn-dark', orn);
+      if (tc) tc.content = orn ? '#0b0b0d' : '#ffffff';
       [].forEach.call(document.querySelectorAll('[data-style]'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.style === st)); });
       try { if (save) localStorage.setItem('ar-style', st); } catch (e) {}
       paint();
@@ -1366,28 +1378,44 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       '<button class="sc-arr r press" aria-label="Следующий образ">' + chev('M9 5l7 7-7 7') + '</button>' +
       '<div class="sc-hint' + (seen ? ' off' : '') + '" aria-hidden="true"><span class="hand"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.5 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/></svg></span><em>Листайте влево</em></div>' +
       '<div class="sc-info"><span class="t"><small></small><b></b><span class="pr"></span></span><a class="sc-go press">Образ ' + chev('M9 5l7 7-7 7') + '</a></div>' +
-      '</div><p class="sc-under">← Свайп — следующий образ</p>';
+      '</div>';
     var st = host.querySelector('.sc-stage'), img = st.querySelector('img'), info = st.querySelector('.sc-info');
     var dots = st.querySelectorAll('.sc-dots i'), aL = st.querySelector('.sc-arr.l'), aR = st.querySelector('.sc-arr.r'), hintEl = st.querySelector('.sc-hint');
     markCached(st);
-    // камера между людьми: pos — дробный номер человека, параметры плавно смешиваются
-    function cam(p) {
-      var a = Math.max(0, Math.min(n - 1, Math.floor(p))), b = Math.min(n - 1, a + 1), t = Math.max(0, Math.min(1, p - a));
-      if (p < 0) { a = b = 0; t = 0; } if (p > n - 1) { a = b = n - 1; t = 0; }
-      var A = ppl[a], B = ppl[b], e = t;
-      var cx = A.cx + (B.cx - A.cx) * e, cy = A.cy + (B.cy - A.cy) * e;
-      // в середине пути камера чуть отъезжает — как при панораме
-      var h = A.h + (B.h - A.h) * e + Math.sin(Math.PI * e) * 90;
-      return { cx: cx, cy: cy, h: Math.min(h, SC.h) };
+    // где на экране свободно (между заголовком и подписью) — туда камера ставит человека целиком
+    var band = { t: 0.35, b: 0.8 }, hero = document.querySelector('.hero'), space = document.querySelector('.sc-space');
+    function measure() {
+      var V = st.clientHeight - fadePx(); if (!V) return;
+      var top0 = host.getBoundingClientRect().top;
+      band.t = Math.min(0.5, (hero.getBoundingClientRect().bottom - top0 + 12) / V);
+      band.b = Math.max(band.t + 0.3, (info.getBoundingClientRect().top - top0 - 34) / V);
+      // контент страницы начинается там, где картинка уже растворяется в ковре
+      var want = host.offsetTop + V + 24 - space.offsetTop;
+      space.style.setProperty('--sp', Math.max(0, Math.round(want)) + 'px');
+    }
+    function fadePx() { return parseFloat(getComputedStyle(host).getPropertyValue('--fade')) || 0; }
+    function frame(k, W, V) {
+      var q = ppl[k], tall = q.bot - q.top, h = tall / ((band.b - band.t) * 0.94);
+      h = Math.min(h, SC.h, SC.w * V / W);
+      var cy = q.top - (band.t + (band.b - band.t) * 0.03) * h + h / 2;
+      return { cx: q.cx, cy: cy, h: h };
+    }
+    function cam(p, W, V) {
+      var a = Math.max(0, Math.min(n - 1, Math.floor(p))), b = Math.min(n - 1, a + 1), e = Math.max(0, Math.min(1, p - a));
+      var A = frame(a, W, V), B = frame(b, W, V);
+      var hh = A.h + (B.h - A.h) * e + Math.sin(Math.PI * e) * 70;
+      return { cx: A.cx + (B.cx - A.cx) * e, cy: A.cy + (B.cy - A.cy) * e, h: Math.min(hh, SC.h, SC.w * V / W) };
     }
     function draw() {
-      var W = st.clientWidth, H = st.clientHeight; if (!W) return;
+      var W = st.clientWidth, V = st.clientHeight - fadePx(), H = st.clientHeight; if (!W || V <= 0) return;
       var p = pos, over = 0;
       if (p < 0) { over = p; p = 0; } else if (p > n - 1) { over = p - (n - 1); p = n - 1; }
-      var c = cam(p), s = H / c.h;
-      var x = W / 2 - c.cx * s, y = H / 2 - c.cy * s;
-      x = Math.min(0, Math.max(W - SC.w * s, x)); y = Math.min(0, Math.max(H - SC.h * s, y));
-      x -= over * W * 0.25;   // резинка на краях
+      var c = cam(p, W, V), s = V / c.h;
+      if (SC.h * s < V) s = V / SC.h;            // видимая часть экрана всегда закрыта картинкой
+      if (SC.w * s < W) s = W / SC.w;
+      var x = W / 2 - c.cx * s, y = V / 2 - c.cy * s;
+      x = Math.min(0, Math.max(W - SC.w * s, x)); y = Math.min(0, Math.max(V - SC.h * s, y));
+      x -= over * W * 0.25;
       img.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
     }
     function label(k) {
@@ -1448,9 +1476,10 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
     st.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' || e.target.closest('a,button')) return; mouse = true; down(e.clientX, e.clientY); });
     window.addEventListener('pointermove', function (e) { if (mouse) move(e.clientX, e.clientY, e); });
     window.addEventListener('pointerup', function () { if (mouse) { mouse = false; up(); } });
-    window.addEventListener('resize', draw);
-    img.addEventListener('load', draw);
-    label(0); draw();
+    function relayout() { measure(); draw(); }
+    window.addEventListener('resize', relayout);
+    img.addEventListener('load', relayout);
+    label(0); setTimeout(relayout, 0); relayout();
     // первый раз камера сама «подглядывает» к соседу — видно, что дальше есть ещё люди
     if (!seen && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
       var peeked = false, io = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
@@ -1461,7 +1490,8 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color
       if (io) io.observe(st);
     }
     // при переключении стиля сцена появляется — пересчитать размеры
-    new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(function () { setTimeout(relayout, 0); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    var installEl = document.querySelector('.install'); if (installEl) new MutationObserver(relayout).observe(installEl, { attributes: true });
   })();
 
   /* ---------- примерочная: шторка, за которой меняется манекен ---------- */
